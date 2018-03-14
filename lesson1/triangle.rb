@@ -21,7 +21,7 @@ def rectangular(a, b, c)
   case (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
   when true
     puts 'Ваш треугольник является прямоугольным.'
-  when false
+  else
     puts 'Ваш треугольник не является прямоугольным.'
   end
 end
