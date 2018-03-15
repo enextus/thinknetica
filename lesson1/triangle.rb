@@ -14,9 +14,7 @@ c = gets.to_i
 def rectangular(a, b, c)
   arr = [a, b, c].sort
 
-  if arr.include?(0) || arr.min < 0
-    return 'Невозможная длина сторон'
-  end
+  return 'Невозможная длина сторон' if arr.include?(0) || arr.min
 
   case (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
   when true
