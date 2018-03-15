@@ -16,8 +16,8 @@ def rectangular(a, b, c)
 
   return 'Невозможная длина сторон' if arr.include?(0) || arr.min < 0
 
-  case
-  when (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
+  case (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
+  when true
     puts 'Ваш треугольник является прямоугольным.'
   else
     puts 'Ваш треугольник не является прямоугольным.'
