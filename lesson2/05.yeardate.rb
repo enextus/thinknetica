@@ -10,20 +10,16 @@ print 'Пожалуйста введите год: '
 year = gets.to_i
 
 def whole_d(year, day, month)
-  arr = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
   # коррекция значения элемента в зависимости от високосности года
-  arr[1] = 29 if ((year % 4).zero? && year % 100 != 0) || (year % 400).zero?
+  days[1] = 29 if ((year % 4).zero? && year % 100 != 0) || (year % 400).zero?
 
-  i = 0
-  result = 0
-
-  arr.inject(0) do |sum, index|
-    i += 1
-    puts "sum = #{sum} index = #{index}"
-    result = sum + index if i < month
+  sum = 0
+  days.each_with_index do |value, index|
+    sum += value if index + 1 < month
   end
-  puts "Количество дней = #{result + day}"
+    puts "Количество дней = #{sum + day}"
 end
 
 whole_d(year, day, month)
