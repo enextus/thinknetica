@@ -20,9 +20,9 @@ puts 'Вывод хеша, имя товара, цена за единицу т�
 puts hash_names
 hash_names.each_with_index do |(name, value), index|
   print "Итоговая сумма за товар по названию '#{name}' составляет: "
-    value.each do |couple|
+  value.each do |couple|
     puts bill = (couple[:price] * couple[:amount]).round(2)
     sum += bill
   end
-  puts "Итоговая сумма за все товары #{sum.round(2)}" if (index + 1).equal?hash_names.length
+  puts "Итоговая сумма #{sum.round(2)}" if (index + 1).equal? hash_names.length
 end
