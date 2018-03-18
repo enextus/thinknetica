@@ -1,13 +1,12 @@
 # Программа записи символьной переменной в хэш
 
-vowels = 'аеёиоуыэюя'
+# дан массив с буквами гласных звуков
+vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я']
 
-v = vowels.split('')
+hash = {}
 
-h = {}
-
-v.each_with_index do |char, index|
-  h[index + 1] = char if vowels.include?(char)
+vowels.each_with_index do |char, index|
+  hash[char] = index + 1
 end
 
-puts h
+puts hash
