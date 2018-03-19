@@ -24,5 +24,6 @@ hash_names.each_with_index do |(name, value), index|
     puts bill = (couple[:price] * couple[:amount]).round(2)
     sum += bill
   end
-  puts "Итоговая сумма #{sum.round(2)}" if (index + 1).equal? hash_names.length
 end
+
+puts "Итоговая сумма #{sum.round(2)}"
