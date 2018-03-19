@@ -1,7 +1,9 @@
 # Программа вычисления суммы покупок
 # hash_main = {[:name], [:price price, :amount amount]}
-hash_names = {}
-sum = 0
+h_purchases = {}
+sum_purchases = 0
+
+# получение значений и запись в хэш
 loop do
   print 'Пожалуйста, введите название товара ("стоп" для окончания): '
   name = gets.chomp
@@ -13,18 +15,19 @@ loop do
 
   print 'Пожалуйста, введите количество единиц: '
   amount = gets.to_i
-  hash_names[:"#{name}"] = [price: price, amount: amount]
+
+  h_purchases[:"#{name}"] = [price: price, amount: amount]
 end
 puts '--------------------------------------------------------------------- '
 puts 'Вывод хеша, имени товара, цены за единицу товара и кол-ва купл. товара: '
-puts hash_names
+puts h_purchases
 
-hash_names.each do |name, value|
+h_purchases.each do |name, value|
   print "Итоговая сумма за товар '#{name}' составляет: "
-  value.each do |couple|
-    puts bill = (couple[:price] * couple[:amount]).round(2)
-    sum += bill
+  value.each do |values|
+    puts bill = (values[:price] * values[:amount]).round(2)
+    sum_purchases += bill
   end
 end
 
-puts "Итоговая сумма #{sum.round(2)}"
+puts "Итоговая сумма #{sum_purchases.round(2)}"
