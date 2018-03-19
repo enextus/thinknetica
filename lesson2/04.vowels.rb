@@ -1,12 +1,18 @@
 # Программа записи символьной переменной в хэш
+# # /[а-яА-ЯЁё]/ все буквы русского алфавита
 
-# дан массив с буквами гласных звуков
-vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я']
+# имеется массив букв русского алфавита
+alphabet = %w[а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я]
 
+# имеется массив букв глассных зжуков
+vowels = %w[а е ё и о у ы э ю я]
+
+# декларируем хэш
 hash = {}
 
-vowels.each_with_index do |char, index|
-  hash[char] = index + 1
+alphabet.each_with_index do |char, index|
+  hash[char] = index + 1 if vowels.include?(char)
 end
 
-puts hash
+# выводим хэш
+puts hash.inspect

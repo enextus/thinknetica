@@ -16,10 +16,10 @@ loop do
   hash_names[:"#{name}"] = [price: price, amount: amount]
 end
 puts '--------------------------------------------------------------------- '
-puts 'Вывод хеша, имя товара, цена за единицу товара и кол-во купл. товара: '
+puts 'Вывод хеша, имени товара, цены за единицу товара и кол-ва купл. товара: '
 puts hash_names
 hash_names.each_with_index do |(name, value), index|
-  print "Итоговая сумма за товар по названию '#{name}' составляет: "
+  print "Итоговая сумма за товар '#{name}' составляет: "
   value.each do |couple|
     puts bill = (couple[:price] * couple[:amount]).round(2)
     sum += bill
