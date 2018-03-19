@@ -18,7 +18,8 @@ end
 puts '--------------------------------------------------------------------- '
 puts 'Вывод хеша, имени товара, цены за единицу товара и кол-ва купл. товара: '
 puts hash_names
-hash_names.each_with_index do |(name, value), index|
+
+hash_names.each_with_index do |name, value|
   print "Итоговая сумма за товар '#{name}' составляет: "
   value.each do |couple|
     puts bill = (couple[:price] * couple[:amount]).round(2)
