@@ -8,7 +8,7 @@ loop do
   print 'Пожалуйста, введите название товара ("стоп" для окончания): '
   name = gets.chomp
 
-  break if name == 'стоп'
+  break if name == 'q'
 
   print 'Пожалуйста, введите цену за единицу товара: '
   price = gets.to_f
@@ -16,18 +16,19 @@ loop do
   print 'Пожалуйста, введите количество единиц: '
   amount = gets.to_i
 
-  h_purchases[:"#{name}"] = [price: price, amount: amount]
+  h_purchases[name.to_s] = { price: price, amount: amount }
 end
 puts '--------------------------------------------------------------------- '
-puts 'Вывод хеша, имени товара, цены за единицу товара и кол-ва купл. товара: '
+puts 'Вывод хеша, им. товара, цены за единицу товара и кол-ва купл. товара: '
 puts h_purchases
+puts '--------------------------------------------------------------------- '
 
 h_purchases.each do |name, value|
   print "Итоговая сумма за товар '#{name}' составляет: "
-  value.each do |values|
-    puts bill = (values[:price] * values[:amount]).round(2)
-    sum_purchases += bill
-  end
+  puts bill = (value[:price] * value[:amount]).round(2)
+  sum_purchases += bill
 end
 
+puts '--------------------------------------------------------------------- '
 puts "Итоговая сумма #{sum_purchases.round(2)}"
+puts '--------------------------------------------------------------------- '
