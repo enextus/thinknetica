@@ -19,7 +19,7 @@ def whole_d(year, day, month)
   days.each_with_index do |value, index|
     sum += value if index + 1 < month
   end
-    puts "Количество дней = #{sum + day}"
+    puts sum + day
 end
 
-whole_d(year, day, month)
+puts whole_d(year, day, month)
