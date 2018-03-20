@@ -8,7 +8,7 @@ loop do
   print 'Пожалуйста, введите название товара ("стоп" для окончания): '
   name = gets.chomp
 
-  break if name == 'q'
+  break if name == 'стоп'
 
   print 'Пожалуйста, введите цену за единицу товара: '
   price = gets.to_f
