@@ -24,10 +24,8 @@ class Station
     trains
   end
 
-  def return_type(train)
-    trains.map.each do |item|
-      item if item.train_type == train.train_type
-    end
+  def return_type(type)
+    trains.select { |train| train.train_type == type }
   end
 
   def sub_train(train)
@@ -59,14 +57,16 @@ end
 
 # class Train
 class Train
-  attr_accessor :wagons, :speed
+  attr_accessor :wagons, :speed, :current_route, :current_station
   attr_reader :train_num, :train_type
 
-  def initialize(train_num, train_type, wagons, speed = 0)
+  def initialize(train_num, train_type, wagons, speed = 0, current_station = 0)
     @train_num = train_num
     @train_type = train_type
     @wagons = wagons
     @speed = speed
+    @current_route = current_route
+    @current_station = current_station
   end
 
   def accelerate
@@ -97,6 +97,32 @@ class Train
   end
 
   def receive_route(route)
-    
+    @current_route = route
+  end
+
+  def move_train_forward(route)
+    return false if current_station >= route.stations.size - 1
+    self.current_station += 1
+  end
+
+  def move_train_backward
+    return false if current_station.zero?
+    self.current_station -= 1
+  end
+
+  def prewious_station(route)
+    return false if current_station.zero?
+    self.current_station -= 1
+    route.stations[current_station]
+  end
+
+  def witch_station_is_now(route)
+    route.stations[current_station]
+  end
+
+  def next_station(route)
+    return false if current_station >= route.stations.size - 1
+    self.current_station += 1
+    route.stations[current_station]
   end
 end
