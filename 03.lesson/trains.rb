@@ -10,25 +10,26 @@ class Station
     @trains = []
   end
 
-  def add_train(train)
-    trains << train
+  def add_train(object)
+    trains << object
   end
 
-  def sub_train(train)
-    trains.delete_at trains.index train
+  #  empty? → true or false
+  # Returns true if self contains no elements.
+  def sub_train(object)
+    return false if trains.empty?
+    trains.delete_at trains.index object
+    trains
   end
 
   def all_trains
     trains
   end
 
-  def type_trains(type)
-    stations.each do |t|
-      puts train_num if train_type.equal?(type)
-    end
+  def type_trains(object)
+
   end
 end
-
 
 # Route
 class Route
@@ -85,9 +86,9 @@ end
 # передаем параметры *(щлем сообщения)
 # в методы экземпляров классов
 
-s = Station.new("Minsk")
-r = Route.new("Moskva", "Kiev")
-t = Train.new("Num001", "cargo", 10)
+# s = Station.new("Minsk")
+# r = Route.new("Moskva", "Kiev")
+# t = Train.new("Num001", "cargo", 10)
 
 # class Station
 # Имеет название, которое указывается при ее создании
@@ -95,13 +96,13 @@ t = Train.new("Num001", "cargo", 10)
 # s = Station.new("Minsk")
 
 # Может принимать поезда (по одному за раз)
-s.add_train(t)
+# s.add_train(t)
 
 # Может возвращать список всех поездов на станции, находящиеся в текущий момент
-s.all_trains
+# s.all_trains
 
 # Может возвращать список поездов на станции по типу (см. ниже): кол-во грузовых, пассажирских
-s.type_trains(type)
+# s.type_trains(type)
 
 # Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов
-sub_train(t)
+# sub_train(t)
