@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# s = Station.new("Minsk")
+# r = Route.new("Moskva", "Kiev")
+# t0 = Train.new("N01", "cargo", 20)
+# t1 = Train.new("N02", "pass", 5)
+# t2 = Train.new("N03", "cargo", 8)
+# t3 = Train.new("N04", "pass", 7)
+
 # Station
 class Station
   attr_reader :name, :trains
@@ -13,16 +20,18 @@ class Station
     trains << train
   end
 
-  def sub_train(train)
-    trains.delete(train)
-  end
-
   def all_trains
     trains
   end
 
-  def type_trains(train)
+  def return_type(train)
+    trains.map.each do |item|
+      item if item.train_type == train.train_type
+    end
+  end
 
+  def sub_train(train)
+    trains.delete(train)
   end
 end
 
@@ -40,7 +49,7 @@ class Route
   end
 
   def sub_station(station)
-    stations.delete_at stations.index station
+    stations.delete(station)
   end
 
   def all_stations
@@ -60,8 +69,20 @@ class Train
     @speed = speed
   end
 
+  def accelerate
+    self.speed += 1
+  end
+
+  def current_speed
+    speed
+  end
+
   def stop
     self.speed = 0
+  end
+
+  def amount_wagons
+    wagons
   end
 
   def add_wagons
@@ -74,30 +95,8 @@ class Train
     return false if wagons.zero?
     self.wagons -= 1
   end
+
+  def receive_route(route)
+    
+  end
 end
-
-
-# создаем экземпляры классов
-# передаем параметры *(щлем сообщения)
-# в методы экземпляров классов
-
-# s = Station.new("Minsk")
-# r = Route.new("Moskva", "Kiev")
-# t = Train.new("Num001", "cargo", 10)
-
-# class Station
-# Имеет название, которое указывается при ее создании
-# назжание передаем при создании экземпляра класса
-# s = Station.new("Minsk")
-
-# Может принимать поезда (по одному за раз)
-# s.add_train(t)
-
-# Может возвращать список всех поездов на станции, находящиеся в текущий момент
-# s.all_trains
-
-# Может возвращать список поездов на станции по типу (см. ниже): кол-во грузовых, пассажирских
-# s.type_trains(type)
-
-# Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов
-# sub_train(t)
