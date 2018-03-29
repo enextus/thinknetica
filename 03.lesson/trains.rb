@@ -2,31 +2,26 @@
 
 # Station
 class Station
-  attr_accessor :trains
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
   end
 
-  def add_train(object)
-    trains << object
+  def add_train(train)
+    trains << train
   end
 
-  #  empty? → true or false
-  # Returns true if self contains no elements.
-  def sub_train(object)
-    return false if trains.empty?
-    trains.delete_at trains.index object
-    trains
+  def sub_train(train)
+    trains.delete(train)
   end
 
   def all_trains
     trains
   end
 
-  def type_trains(object)
+  def type_trains(train)
 
   end
 end
