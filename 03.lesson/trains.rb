@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# s = Station.new("Minsk")
-# r = Route.new("Moskva", "Kiev")
+# s = Station.new("Station")
+# r = Route.new("Start", "Stop")
 # t0 = Train.new("N01", "cargo", 20)
 # t1 = Train.new("N02", "pass", 5)
 # t2 = Train.new("N03", "cargo", 8)
@@ -17,112 +17,112 @@ class Station
   end
 
   def add_train(train)
-    trains << train
-  end
-
-  def all_trains
-    trains
+    return if trains.include?(train)
+    @trains << train
   end
 
   def return_type(type)
-    trains.select { |train| train.train_type == type }
+    @trains.select { |train| train.type == type }
   end
 
-  def sub_train(train)
-    trains.delete(train)
+  def depart(train)
+    @trains.delete(train)
   end
 end
 
 # Route
 class Route
-  attr_accessor :stations
-  attr_reader :start_station, :stop_station
+  attr_reader :start_station, :stop_station, :stations
 
   def initialize(start_station, stop_station)
-    @stations = [start_station, stop_station]
+    @start_station = start_station
+    @stop_station = stop_station
+    @stations = [@start_station, @stop_station]
   end
 
   def add_station(station)
-    stations.insert(-2, station)
+    return if stations.include?(station)
+    @stations.insert(-2, station)
   end
 
-  def sub_station(station)
-    stations.delete(station)
+  def delete_station(station)
+    return if [@stations.first, @stations.last].include?(station)
+    @stations.delete(station)
   end
 
   def all_stations
-    stations
+    p @stations
   end
 end
 
 # class Train
 class Train
-  attr_accessor :wagons, :speed, :current_route, :current_station
-  attr_reader :train_num, :train_type
+  attr_reader :train_number, :type, :speed, :wagons, :route
 
-  def initialize(train_num, train_type, wagons, speed = 0, current_station = 0)
-    @train_num = train_num
-    @train_type = train_type
+  def initialize(train_number, type, wagons)
+    @train_number = train_number
+    @type = type
+    @speed = 0
     @wagons = wagons
-    @speed = speed
-    @current_route = current_route
-    @current_station = current_station
+    @count
+    @route
   end
 
-  def accelerate
-    self.speed += 1
+  def accelerate(value)
+    return unless value.positive?
+    @speed += value
   end
 
-  def current_speed
-    speed
+  def decelerate(value)
+    return if value.zero? || value.negative? || (@speed - value).negative?
+    @speed -= value
   end
 
-  def stop
-    self.speed = 0
+  def add_wagon
+    return unless speed.zero?
+    @wagons += 1
   end
 
-  def amount_wagons
-    wagons
+  def delete_wagon
+    return unless speed.zero? ||  wagons.zero?
+    @wagons -= 1
   end
 
-  def add_wagons
-    return false until speed.zero?
-    self.wagons += 1
+  def receive_route(route, station)
+    @route = route
+    @count = 0
+    station.add_train(self)
   end
 
-  def sub_wagons
-    return false until speed.zero?
-    return false if wagons.zero?
-    self.wagons -= 1
+  def move_train_forward(route, station)
+    return if station.nil? || @count >= route.stations.size - 1
+    station.depart(self)
+    @count += 1
+    station.add_train(self)
   end
 
-  def receive_route(route)
-    @current_route = route
+  def move_train_backward(station)
+    return if station.nil? || @count.zero?
+    station.depart(self)
+    @count -= 1
+    station.add_train(self)
   end
 
-  def move_train_forward(route)
-    return false if current_station >= route.stations.size - 1
-    self.current_station += 1
-  end
 
-  def move_train_backward
-    return false if current_station.zero?
-    self.current_station -= 1
-  end
 
   def prewious_station(route)
-    return false if current_station.zero?
-    self.current_station -= 1
-    route.stations[current_station]
+    return if station.zero?
+    @count -= 1
+    route.stations[@count]
   end
 
   def witch_station_is_now(route)
-    route.stations[current_station]
+    route.stations[@count]
   end
 
   def next_station(route)
-    return false if current_station >= route.stations.size - 1
-    self.current_station += 1
-    route.stations[current_station]
+    return if station >= route.stations.size - 1
+    @count += 1
+    route.stations[@count]
   end
 end
