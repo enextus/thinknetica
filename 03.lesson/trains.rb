@@ -108,21 +108,19 @@ class Train
     station.add_train(self)
   end
 
-
+  def next_station(route)
+    return if @count >= route.stations.size - 1
+    @count += 1
+    route.stations[@count]
+  end
 
   def prewious_station(route)
-    return if station.zero?
+    return if @count.zero?
     @count -= 1
     route.stations[@count]
   end
 
-  def witch_station_is_now(route)
-    route.stations[@count]
-  end
-
-  def next_station(route)
-    return if station >= route.stations.size - 1
-    @count += 1
+  def current_station(route)
     route.stations[@count]
   end
 end
