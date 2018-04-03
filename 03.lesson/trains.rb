@@ -32,12 +32,10 @@ end
 
 # Route
 class Route
-  attr_reader :start_station, :stop_station, :stations
+  attr_reader :stations
 
   def initialize(start_station, stop_station)
-    @start_station = start_station
-    @stop_station = stop_station
-    @stations = [@start_station, @stop_station]
+    @stations = [start_station, stop_station]
   end
 
   def add_station(station)
@@ -53,6 +51,14 @@ class Route
   def all_stations
     p @stations
   end
+
+  def start_station
+    stations.first
+  end
+
+  def stop_station
+    stations.last
+  end
 end
 
 # class Train
@@ -64,8 +70,6 @@ class Train
     @type = type
     @speed = 0
     @wagons = wagons
-    @count
-    @route
   end
 
   def accelerate(value)
@@ -74,7 +78,7 @@ class Train
   end
 
   def decelerate(value)
-    return if value.zero? || value.negative? || (@speed - value).negative?
+    return if value.negative? || @speed < value
     @speed -= value
   end
 
@@ -84,7 +88,7 @@ class Train
   end
 
   def delete_wagon
-    return unless speed.zero? ||  wagons.zero?
+    return unless speed.zero? || wagons.zero?
     @wagons -= 1
   end
 
