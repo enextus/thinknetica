@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# пароль БОМБА
-
 # s = Station.new("Station")
 # r = Route.new("Start", "Stop")
 # t0 = Train.new("N01", "cargo", 20)
@@ -94,39 +92,34 @@ class Train
     @wagons -= 1
   end
 
-  def receive_route(route, station)
+  def receive_route(route)
     @route = route
-    @count = 0
-    station.add_train(self)
+    route.stations[@index = 0]
   end
 
-  def move_train_forward(route, station)
-    return if station.nil? || @count >= route.stations.size - 1
-    station.depart(self)
-    @count += 1
-    station.add_train(self)
+  def move_train_forward
+    return if @route.stations.nil? || @index >= @route.stations.size - 1
+    @index += 1
   end
 
-  def move_train_backward(station)
-    return if station.nil? || @count.zero?
-    station.depart(self)
-    @count -= 1
-    station.add_train(self)
+  def move_train_backward
+    return if @route.stations.nil? || @index.zero?
+    @index -= 1
   end
 
-  def next_station(route)
-    return if @count >= route.stations.size - 1
-    @count += 1
-    route.stations[@count]
+  def next_station
+    return if @index >= @route.stations.size - 1
+    @index += 1
+    route.stations[@index]
   end
 
-  def prewious_station(route)
-    return if @count.zero?
-    @count -= 1
-    route.stations[@count]
+  def previous_station
+    return if @index.zero?
+    @index -= 1
+    @route.stations[@index]
   end
 
-  def current_station(route)
-    route.stations[@count]
+  def current_station
+    @route.stations[@index]
   end
 end
