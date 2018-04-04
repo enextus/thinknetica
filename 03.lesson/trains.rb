@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# пароль БОМБА
+
 # s = Station.new("Station")
 # r = Route.new("Start", "Stop")
 # t0 = Train.new("N01", "cargo", 20)
