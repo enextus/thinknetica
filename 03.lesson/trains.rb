@@ -21,12 +21,12 @@ class Station
     @trains << train
   end
 
-  def return_type(type)
-    @trains.select { |train| train.type == type }
-  end
-
   def depart(train)
     @trains.delete(train)
+  end
+
+  def return_type(type)
+    @trains.select { |train| train.type == type }
   end
 end
 
@@ -63,13 +63,13 @@ end
 
 # class Train
 class Train
-  attr_reader :train_number, :type, :speed, :wagons, :route
+  attr_reader :train_number, :type, :wagons, :speed, :route
 
   def initialize(train_number, type, wagons)
     @train_number = train_number
     @type = type
-    @speed = 0
     @wagons = wagons
+    @speed = 0
   end
 
   def accelerate(value)
@@ -94,32 +94,40 @@ class Train
 
   def receive_route(route)
     @route = route
-    route.stations[@index = 0]
+    @route.stations[@index = 0]
   end
 
   def move_train_forward
     return if @route.stations.nil? || @index >= @route.stations.size - 1
-    @index += 1
+
+    # station.depart(self)
+
+    @route.stations[@index += 1]
+
+    # station.add_train(self)
   end
 
   def move_train_backward
     return if @route.stations.nil? || @index.zero?
-    @index -= 1
-  end
 
-  def next_station
-    return if @index >= @route.stations.size - 1
-    @index += 1
-    route.stations[@index]
+    # self.depart(self)
+
+    @route.stations[@index -= 1]
+
+    # station.add_train(self)
   end
 
   def previous_station
     return if @index.zero?
-    @index -= 1
-    @route.stations[@index]
+    @route.stations[@index - 1]
   end
 
   def current_station
     @route.stations[@index]
+  end
+
+  def next_station
+    return if @index >= @route.stations.size - 1
+    @route.stations[@index + 1]
   end
 end
