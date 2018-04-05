@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-# s = Station.new("Station")
-# r = Route.new("Start", "Stop")
-# t0 = Train.new("N01", "cargo", 20)
-# t1 = Train.new("N02", "pass", 5)
-# t2 = Train.new("N03", "cargo", 8)
-# t3 = Train.new("N04", "pass", 7)
+# s = Station.new('s1')
+# r = Route.new(s1, s3)
+# t0 = Train.new('N01', 'cargo', 20)
+# t1 = Train.new('N02', 'pass', 5)
+# t2 = Train.new('N03', 'cargo', 8)
+# t3 = Train.new('N04', 'pass', 7)
 
-# Station
+# class Station
 class Station
   attr_reader :name, :trains
 
@@ -16,7 +16,7 @@ class Station
     @trains = []
   end
 
-  def add_train(train)
+  def arrive(train)
     return if trains.include?(train)
     @trains << train
   end
@@ -30,7 +30,7 @@ class Station
   end
 end
 
-# Route
+# class Route
 class Route
   attr_reader :stations
 
@@ -49,15 +49,15 @@ class Route
   end
 
   def all_stations
-    p @stations
+    @stations.each { |station| puts station.name }
   end
 
   def start_station
-    stations.first
+    @stations.first
   end
 
   def stop_station
-    stations.last
+    @stations.last
   end
 end
 
@@ -94,27 +94,22 @@ class Train
 
   def receive_route(route)
     @route = route
-    @route.stations[@index = 0]
+    @index = 0
+    current_station.arrive(self)
   end
 
   def move_train_forward
     return if @route.stations.nil? || @index >= @route.stations.size - 1
-
-    # station.depart(self)
-
-    @route.stations[@index += 1]
-
-    # station.add_train(self)
+    current_station.depart(self)
+    @index += 1
+    current_station.arrive(self)
   end
 
   def move_train_backward
     return if @route.stations.nil? || @index.zero?
-
-    # self.depart(self)
-
-    @route.stations[@index -= 1]
-
-    # station.add_train(self)
+    current_station.depart(self)
+    @index -= 1
+    current_station.arrive(self)
   end
 
   def previous_station
