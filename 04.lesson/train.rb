@@ -3,8 +3,6 @@
 # class Train
 class Train
 
-  public
-
   attr_reader :train_number, :wagons, :type, :speed, :route
 
   def initialize(train_number, wagons, type)
@@ -52,13 +50,13 @@ class Train
     current_station.arrive(self)
   end
 
-  # Может возвращать текущую скорость - в ТЗ не требуется ни вывод ни возвращать
+  # в ТЗ не требуется ни вывод ни возвращать
   def accelerate(value)
     return unless value.positive?
     @speed += value
   end
 
-  # Может тормозить - в ТЗ не требуется ни выводить ни возвращать
+  # в ТЗ не требуется ни выводить ни возвращать
   def decelerate(value)
     return if value.negative? || @speed < value
     @speed -= value
@@ -81,7 +79,6 @@ end
 class PassengerTrain < Train
 
   def initialize(train_number, wagons)
-    # вызываешь супер, передаешь аргументы, инициализируешь в родителе
     super(train_number, wagons, 'passenger')
   end
 end
@@ -90,11 +87,6 @@ end
 class CargoTrain < Train
 
   def initialize(train_number, wagons)
-    # вызываешь супер, передаешь аргументы, инициализируешь в родителе
     super(train_number, wagons, 'cargo')
-  end
-
-  def hallo(value)
-    accelerate(value)
   end
 end
