@@ -71,16 +71,18 @@ end
 class PassengerTrain < Train
 
   def initialize(train_number, wagons)
-    @type = 'passenger'
-    super(train_number, wagons, type)
+    # вызываешь супер, передаешь аргументы, инициализируешь в родителе
+    super(train_number, wagons, 'passenger')
   end
+
+
 end
 
 # class CargoTrain
 class CargoTrain < Train
 
   def initialize(train_number, wagons)
-    @type = 'cargo'
-    super(train_number, wagons, type)
+    # вызываешь супер, передаешь аргументы, инициализируешь в родителе
+    super(train_number, wagons, 'cargo')
   end
 end
