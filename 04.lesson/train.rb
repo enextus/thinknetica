@@ -3,13 +3,13 @@
 # class Train
 class Train
 
-  attr_reader :train_number,:type, :wagons, :speed, :route
+  attr_reader :train_number, :wagons, :type, :speed, :route
 
-  def initialize(train_number, type, wagons)
+  def initialize(train_number, wagons, type)
     @train_number = train_number
     @wagons = wagons
-    @speed = 0
     @type = type
+    @speed = 0
   end
 
   def accelerate(value)
@@ -72,6 +72,7 @@ class PassengerTrain < Train
 
   def initialize(train_number, wagons)
     @type = 'passenger'
+    super(train_number, wagons, type)
   end
 end
 
@@ -80,5 +81,6 @@ class CargoTrain < Train
 
   def initialize(train_number, wagons)
     @type = 'cargo'
+    super(train_number, wagons, type)
   end
 end
