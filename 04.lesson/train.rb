@@ -2,14 +2,6 @@
 
 # class Train
 class Train
-  attr_reader :train_number, :type, :wagons, :speed, :route
-
-  def initialize(train_number, type, wagons)
-    @train_number = train_number
-    @type = type
-    @wagons = wagons
-    @speed = 0
-  end
 
   def accelerate(value)
     return unless value.positive?
@@ -64,4 +56,30 @@ class Train
     return if @index >= @route.stations.size - 1
     @route.stations[@index + 1]
   end
+end
+
+# class PassengerTrain
+class PassengerTrain < Train
+
+  attr_reader :train_number,:type, :wagons, :speed, :route
+
+    def initialize(train_number, wagons)
+      @train_number = train_number
+      @wagons = wagons
+      @speed = 0
+      @type = 'passenger'
+    end
+end
+
+# class CargoTrain
+class CargoTrain < Train
+
+  attr_reader :train_number,:type, :wagons, :speed, :route
+
+    def initialize(train_number, wagons)
+      @train_number = train_number
+      @wagons = wagons
+      @type = 'cargo'
+      @speed = 0
+    end
 end
