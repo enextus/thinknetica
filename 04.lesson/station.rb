@@ -9,6 +9,10 @@ class Station
     @trains = []
   end
 
+  def return_type(type)
+    @trains.select { |train| train.type == type }
+  end
+
   def arrive(train)
     return if trains.include?(train)
     @trains << train
@@ -16,9 +20,5 @@ class Station
 
   def depart(train)
     @trains.delete(train)
-  end
-
-  def return_type(type)
-    @trains.select { |train| train.type == type }
   end
 end

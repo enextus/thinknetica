@@ -3,7 +3,7 @@
 # class PassengerTrain
 class PassengerTrain < Train
 
-  def initialize(train_number, wagons)
-    super(train_number, wagons, 'passenger')
+  def initialize(train_number)
+    super(train_number, 'passenger')
   end
 end

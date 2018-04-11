@@ -3,13 +3,27 @@
 # class Train
 class Train
 
-  attr_reader :train_number, :wagons, :type, :speed, :route
+  attr_reader :train_number, :type, :speed, :wagons, :route
 
-  def initialize(train_number, wagons, type)
+  def initialize(train_number, type)
     @train_number = train_number
-    @wagons = wagons
     @type = type
     @speed = 0
+    @wagons = []
+  end
+
+  def current_wagons_number
+    @wagons.size
+  end
+
+  def add_wagon(wagon)
+    return unless speed.zero? && @type == wagon.type
+    @wagons << wagon
+  end
+
+  def delete_wagon(wagon)
+    return unless speed.zero? || wagons.zero?
+    @wagons.delete(wagon)
   end
 
   def receive_route(route)
@@ -54,15 +68,5 @@ class Train
   def decelerate(value)
     return if value.negative? || @speed < value
     @speed -= value
-  end
-
-  def add_wagon
-    return unless speed.zero?
-    @wagons += 1
-  end
-
-  def delete_wagon
-    return unless speed.zero? || wagons.zero?
-    @wagons -= 1
   end
 end
