@@ -21,8 +21,10 @@ class Train
     @wagons << wagon
   end
 
-  def delete_wagon(wagon)
+  def delete_wagon
     return unless speed.zero? || wagons.zero?
+    # select last wagon this trains
+    wagon = @wagons.last
     @wagons.delete(wagon)
   end
 
