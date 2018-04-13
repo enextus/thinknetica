@@ -44,7 +44,8 @@ class AppController
     puts " 11 - Добавлять маршрут"
     puts " 12 - Удалять маршрут"
     puts " 13 - Назначать маршрут поезду"
-    puts " 14 - Перемещать поезд по маршруту вперед и назад"
+    puts " 14 - Переместить поезд по маршруту вперед"
+    puts " 15 - Переместить поезд по маршруту назад"
     puts BORDERLINE;
     puts "Для выхода из меню введите: exit"
     puts BORDERLINE;
@@ -66,6 +67,22 @@ class AppController
       list_stations
     when '7'
       list_trains_on_select_station
+    when '8'
+      create_route
+    when '9'
+      add_station_in_to_route
+    when '10'
+      delete_station_in_to_route
+    when '11'
+      add_route
+    when '12'
+      delete_route
+    when '13'
+      receive_route_to_train
+    when '14'
+      move_train_forward_by_route
+    when '15'
+      move_train_backward_by_route
     else
       puts "Повторите ввод!"
     end
@@ -74,21 +91,8 @@ class AppController
 
   private
 
-  # создание станции с валидацией ввода
-  def create_station
-    request_info = ["Введите название станции: "]
-    getting_info(request_info, :validate_station, :create_station!)
-  end
-
-  # создание поезда с валидацией ввода
-  def create_train
-    request_info = ["Укажите тип поезда (1 - пассажирский, 2 - грузовой): ",
-    "Введите номер поезда: "]
-    getting_info(request_info, :validate_train, :create_train!)
-  end
-
   # валидатор ввода текстовой информации и формирование меню,
-  # нагло скопирован в сети, изучен и почти понят
+  # нагло скопирован в сети
   def getting_info(request_info, validator, success_callback)
     response = nil
     loop do
@@ -107,6 +111,48 @@ class AppController
       end
     end
     response
+  end
+
+  # создание станции с валидацией ввода
+  def create_station
+    request_info = ["Введите название станции: "]
+    getting_info(request_info, :validate_station, :create_station!)
+  end
+
+  # создание поезда с валидацией ввода
+  def create_train
+    request_info = ["Укажите тип поезда (1 - пассажирский, 2 - грузовой): ",
+    "Введите номер поезда: "]
+    getting_info(request_info, :validate_train, :create_train!)
+  end
+
+  # создаем маршрут
+  def create_route
+    if @stations.empty? || @stations.size < 2
+      puts 'Станции отсутствуют или их колихество меньше двух. Создайте минимум две станции.'
+    else
+      request_info = ["Введите название начальной и конечной из списка станции [#{@stations.keys.join(', ')}]: "]
+      getting_info(request_info, :validate_route, :create_route!)
+      puts 'Маршрут успешно создан.'
+    end
+  end
+
+  # проверка ввода маршрута
+  def validate_route(start_station, stop_station)
+    errors = []
+    errors << 'Начальная и конечная станция маршрута не может быть пустой. Повторите ввод!' if start_station.empty? || stop_station.empty?
+    name = start_station + " - " + stop_station
+    errors << 'маршрут с таким именем уже есть' if @routes[name.to_sym]
+    errors.empty? ? {success: true} : {success: false, 'errors': errors}
+  end
+
+  # записъ созданного маршрута в хеш маршрутов
+  def create_route!(start_station, stop_station)
+    route = Route.new(start_station, stop_station)
+    @routes[route.name.to_sym] = route
+    puts "Маршрут «#{route.name}» создан."
+    puts "Обьект маршрута создан «#{route.inspect}»"
+    puts "Маршрут сохранен в хеш маршрутов «#{@routes}»"
   end
 
   # проверка ввода названия станции
@@ -251,4 +297,5 @@ class AppController
         end
     end
   end
+
 end
