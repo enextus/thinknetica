@@ -27,6 +27,7 @@ class AppController
     @stations = Hash.new
     @trains = Hash.new
     @routes = Hash.new
+    @start_stop_stations = []
   end
 
   def show_actions
@@ -91,8 +92,7 @@ class AppController
 
   private
 
-  # валидатор ввода текстовой информации и формирование меню,
-  # нагло скопирован в сети
+  # валидатор ввода текстовой информации и формирования меню
   def getting_info(request_info, validator, success_callback)
     response = nil
     loop do
@@ -113,6 +113,44 @@ class AppController
     response
   end
 
+  # создаем маршрут
+  def create_route
+    if @stations.empty? || @stations.size < 2
+      puts 'Станции отсутствуют или их колихество меньше двух. Создайте минимум две станции.'
+    else
+      request_info = ["Введите название начальной станции [#{@stations.keys.join(', ')}]: "]
+      getting_info(request_info, :validate_route, :create_route!)
+      puts 'Маршрут успешно создан.'
+    end
+  end
+
+  # проверка ввода маршрута
+  def validate_route(name)
+    puts "1. #{@start_stop_stations}"
+    errors = []
+    errors << 'Начальная и конечная станция маршрута не может быть пустой. Повторите ввод!' if name.empty?
+    errors << 'Станция отсутствует!' if @stations[name.to_sym].nil?
+    @start_stop_stations << name if errors.empty?
+    case @start_stop_stations.size
+    when 2
+      puts "2. #{@start_stop_stations}"
+      errors.empty? ? {success: true} : {success: false, 'errors': errors}
+    else
+      puts "3. #{@start_stop_stations}"
+      errors << 'Введите название второй станции: ' if @start_stop_stations.size < 2
+      puts "#{@start_stop_stations}"
+      errors.empty? ? {success: true} : {success: false, 'errors': errors}
+    end
+  end
+
+  def validate_station_selection(name)
+    if @stations[name.to_sym]
+      {success: true}
+    else
+      {success: false, 'errors': 'Станция отсутствует!'}
+    end
+  end
+
   # создание станции с валидацией ввода
   def create_station
     request_info = ["Введите название станции: "]
@@ -124,26 +162,6 @@ class AppController
     request_info = ["Укажите тип поезда (1 - пассажирский, 2 - грузовой): ",
     "Введите номер поезда: "]
     getting_info(request_info, :validate_train, :create_train!)
-  end
-
-  # создаем маршрут
-  def create_route
-    if @stations.empty? || @stations.size < 2
-      puts 'Станции отсутствуют или их колихество меньше двух. Создайте минимум две станции.'
-    else
-      request_info = ["Введите название начальной и конечной из списка станции [#{@stations.keys.join(', ')}]: "]
-      getting_info(request_info, :validate_route, :create_route!)
-      puts 'Маршрут успешно создан.'
-    end
-  end
-
-  # проверка ввода маршрута
-  def validate_route(start_station, stop_station)
-    errors = []
-    errors << 'Начальная и конечная станция маршрута не может быть пустой. Повторите ввод!' if start_station.empty? || stop_station.empty?
-    name = start_station + " - " + stop_station
-    errors << 'маршрут с таким именем уже есть' if @routes[name.to_sym]
-    errors.empty? ? {success: true} : {success: false, 'errors': errors}
   end
 
   # записъ созданного маршрута в хеш маршрутов
@@ -260,14 +278,6 @@ class AppController
 
   def select_station(name)
     selected_station = @stations[name.to_sym]
-  end
-
-  def validate_station_selection(name)
-    if @stations[name.to_sym]
-      {success: true}
-    else
-      {success: false, 'errors': 'Станция отсутствует!'}
-    end
   end
 
   def list_stations
