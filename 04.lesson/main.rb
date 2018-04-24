@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-BORDERLINE = '_' * 50;
+BORDERLINE = '_' * 50
 require_relative 'station'
 require_relative 'route'
 require_relative 'wagon'
@@ -33,9 +33,42 @@ loop do
   app_controller.action(choice)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # class Seed
 class Seed
-
   attr_reader :stations, :trains, :routes, :wagons
 
   def initialize
@@ -44,7 +77,6 @@ class Seed
     @routes = []
     @wagons = []
   end
-
 
   def seed
     if @stations.empty?

@@ -2,7 +2,6 @@
 
 # class Train
 class Train
-
   attr_reader :train_number, :type, :speed, :wagons, :route
 
   def initialize(train_number, type)
@@ -23,9 +22,7 @@ class Train
 
   def delete_wagon
     return unless speed.zero? || wagons.zero?
-    # select last wagon this trains
-    wagon = @wagons.last
-    @wagons.delete(wagon)
+    @wagons.pop
   end
 
   def receive_route(route)

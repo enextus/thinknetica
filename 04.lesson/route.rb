@@ -6,7 +6,7 @@ class Route
 
   def initialize(start_station, stop_station)
     @stations = [start_station, stop_station]
-    @name = start_station + " - " + stop_station
+    @name = "#{start_station}-#{stop_station}"
   end
 
   def add_station(station)
