@@ -1,3 +1,4 @@
+require "pry"
 # frozen_string_literal: true
 
 # Программа позволяет пользователю через текстовый интерфейс делать следующее:
@@ -24,11 +25,10 @@ class AppController
     puts ' 8 - Создать маршрут'
     puts ' 9 - Добавитъ станцию в маршрут'
     puts ' 10 - Удалитъ станцию в маршруте'
-    puts ' 11 - Добавлять маршрут'
-    puts ' 12 - Удалять маршрут'
-    puts ' 13 - Назначать маршрут поезду'
-    puts ' 14 - Переместить поезд по маршруту вперед'
-    puts ' 15 - Переместить поезд по маршруту назад'
+    puts ' 11 - Удалять маршрут'
+    puts ' 12 - Назначать маршрут поезду'
+    puts ' 13 - Переместить поезд по маршруту вперед'
+    puts ' 14 - Переместить поезд по маршруту назад'
     puts ' 16 - Посмотреть список созданных маршрутов'
     puts BORDERLINE
     puts 'Для выхода из меню введите: exit'
@@ -55,18 +55,15 @@ class AppController
       create_route
     when '9'
       add_station_in_to_route
-      ##################################################
     when '10'
-      delete_station_in_to_route
+      delete_station_in_route
     when '11'
-      add_route
-    when '12'
       delete_route
+    when '12'
+      assign_route_to_train
     when '13'
-      receive_route_to_train
-    when '14'
       move_train_forward_by_route
-    when '15'
+    when '14'
       move_train_backward_by_route
     when '16'
       show_all_routes
@@ -90,6 +87,7 @@ class AppController
       end
 
       check = send(validator, *args)
+
       if check[:success]
         response = send(success_callback, *args)
         break
@@ -99,31 +97,6 @@ class AppController
     end
     response
   end
-
-#  ###############   ОБРАЗЕЦ на ввод несколъкий параметров ############
-=begin
-# создание станции с валидацией ввода
-  def _create_station
-    request_info = ['Ввод название станции: ', 'цвет станции: ', 'и другие ']
-    getting_info(request_info, :validate_station, :create_station!)
-  end
-
-# проверка ввода названия станции
-  def _validate_station(name, color, и_так_далее)
-    errors = []
-
-    errors << 'и_так_далее не может быть пустым. Введите!' if и_так_далее.empty?
-    errors << 'Станция с таким цветом уже есть' if @stations[и_так_далее.to_sym]
-
-    errors << 'Цвет станции не может быть пустым. Введите!' if color.empty?
-    errors << 'Станция с таким цветом уже есть' if @stations[color.to_sym]
-
-    errors << 'Название не может быть пустым. Повторите ввод!' if name.empty?
-    errors << 'Станция с таким именем уже есть' if @stations[name.to_sym]
-
-    errors.empty? ? {success: true} : {success: false, 'errors': errors}
-  end
-=end
 
   # ###############    1 - создание станции  ##################################
 
@@ -281,6 +254,7 @@ class AppController
 
   # список имеющихся станций
   def list_stations
+    # binding.pry
     if @stations.empty?
       puts 'Создайте минимум одну станцию'
     else
@@ -293,7 +267,7 @@ class AppController
   # список поездов на выбранной станции
   def list_trains_on_station
     if @trains.empty? || @stations.empty?
-      puts 'Создайте минимум один поезд и минимум одну станцию'
+      puts 'Создайте минимум один поезд и минимум одну станцию, если несозданы'
     else
       request_info = ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
       station = getting_info(request_info,
@@ -302,7 +276,7 @@ class AppController
       if station.trains.any?
         puts "\n На выбранной вами станции «#{station.name}» имеются поезда:"
         station.trains.each do |train|
-          puts "N: «#{train.train_number}», тип: «#{train.type}», вагонов: «#{train.wagons.size}»"
+        puts "«#{train.train_number}», «#{train.type}», «#{train.wagons.size}»"
         end
       else
         puts "\n На выбранной станции «#{station.name}» поезда отсутствуют."
@@ -324,8 +298,8 @@ class AppController
   end
 
   # проверка станций для маршрута
-  def validate_stations_selection(start_station, stop_station)
-    if @stations[start_station.to_sym] && @stations[stop_station.to_sym]
+  def validate_stations_selection(first_station, last_station)
+    if @stations[first_station.to_sym] && @stations[last_station.to_sym]
       { success: true }
     else
       { success: false, 'errors': 'Станции нет или пустой ввод, повторите!' }
@@ -333,8 +307,8 @@ class AppController
   end
 
   # создание маршрута и записъ созданного маршрута в хеш маршрутов
-  def create_route!(start_station, stop_station)
-    route = Route.new(start_station, stop_station)
+  def create_route!(first_station, last_station)
+    route = Route.new(@stations[first_station.to_sym], @stations[last_station.to_sym])
     @routes[route.name.to_sym] = route
     puts "Маршрут «#{route.name}» создан."
     puts "Маршрут сохранен в хеш маршрутов «#{@routes}»"
@@ -363,23 +337,6 @@ class AppController
     end
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   # проверка выбранного маршрута
   def validate_route_selection(name)
     if @routes[name.to_sym]
@@ -397,12 +354,119 @@ class AppController
   # проверка вьбранной станции
   def validate_station_selection_for_route(name)
     errors = []
-    puts "@stations[name.to_sym] #{@stations[name.to_sym]}"
-    errors << 'Станция отсутствует!' if @stations[name.to_sym].nil?
-    return unless @routes.include?(@stations[name.to_sym])
-    errors << 'Такая станция уже есть в маршруте. Повторите ввод!'
-    errors.empty? ? { success: true } : { success: false, 'errors': errors }
+    errors << 'Станции с таким именем нет! Ввод.' unless @stations[name.to_sym]
+    errors.empty? ? {success: true} : {success: false, 'errors': errors}
   end
+
+  # ############### 10 - Удалитъ станцию в маршруте ###########################
+
+  # выбор маршрута и станции для удаления
+  def delete_station_in_route
+    if @routes.empty?
+      puts 'Маршруты отсутствуют, создайте маршрут.'
+    else
+      # вводим название маршрута
+      request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
+      route = getting_info(request_info,
+                           :validate_route_selection,
+                           :select_route)
+
+      # вводим название станции
+      all_stations = route.stations.map { |station| station.name }.join(', ')
+      request_info = ["Ввод название станции [#{all_stations}]: "]
+      station = getting_info(request_info,
+                             :validate_station_selection_for_route,
+                             :select_station)
+
+      # добавляем станцию в маршрут!"
+      route.delete_station(station)
+      puts 'Станция успешно удалена в выбранном маршруте.'
+    end
+  end
+
+  # ############### 11 - Удалить маршрут ######################################
+
+  def delete_route
+    if @routes.empty?
+      puts 'Маршруты отсутствуют, создайте маршрут.'
+    else
+      # вводим название маршрута
+      request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
+      getting_info(request_info,
+                           :validate_route_selection,
+                           :delete_route!)
+    end
+  end
+
+  # удаляем маршрут в списке маршрутов"
+  def delete_route!(name)
+    @routes.delete(name.to_sym)
+    puts 'Маршрут успешно удалена в списке маршрутов.'
+  end
+
+  # ############### 12 - Назначать маршрут поезду  ############################
+  def assign_route_to_train
+    if @routes.empty? || @trains.empty?
+      puts 'Маршруты или поезда отсутствуют, создайте!'
+    else
+      # вводим название маршрута
+      request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
+      route = getting_info(request_info,
+                           :validate_route_selection,
+                           :select_route)
+
+      request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
+      train = getting_info(request_info,
+                           :validate_train_for_assign,
+                           :select_train)
+
+      # назначаем маршрут поезду
+      train.assign_route(route)
+    end
+  end
+
+  # проверка ввода названия поезда
+  def validate_train_for_assign(train_number)
+    if @trains[train_number.to_sym]
+      { success: true }
+    else
+      { success: false, 'errors': 'Поезда нет или ввод пуст, повторите!' }
+    end
+  end
+
+  # ############### 13 - Переместить поезд по маршруту вперед   ###############
+  def move_train_forward_by_route
+    if @routes.empty? || @trains.empty?
+      puts 'Маршруты или поезда отсутствуют, создайте!'
+    else
+      request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
+      train = getting_info(request_info,
+                           :validate_train_for_assign,
+                           :select_train)
+
+      # назначаем маршрут поезду
+      train.move_train_forward
+      puts 'Поезд перемещен вперед по маршруту.'
+    end
+  end
+
+  # ###############  14 - Переместить поезд по маршруту назад   ###############
+  def move_train_backward_by_route
+    if @routes.empty? || @trains.empty?
+      puts 'Маршруты или поезда отсутствуют, создайте!'
+    else
+      request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
+      train = getting_info(request_info,
+                           :validate_train_for_assign,
+                           :select_train)
+
+      # назначаем маршрут поезду
+      train.move_train_backward
+      puts 'Поезд перемещен назад по маршруту.'
+    end
+  end
+
+  # ############### 16 - Посмотреть список созданных маршрутов ################
 
   # список имеющихся маршрутов
   def show_all_routes
@@ -415,42 +479,4 @@ class AppController
       @routes.each { |route| puts route.inspect }
     end
   end
-
-  # выбор маршрута и станции для удаления
-  def delete_station_in_to_route
-    if @routes.empty?
-      puts 'Маршруты отсутствуют, создайте маршрут.'
-    else
-      # вводим название маршрута
-      request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
-      route = getting_info(request_info,
-                           :validate_route_selection,
-                           :select_route)
-      # вводим название станции
-      # request_info = ["Ввод название станции [#{route.stations.each { |stations| print stations.name} }]: "]
-      request_info = ["Ввод название станции [#{route.stations.name}]: "]
-      station = getting_info(request_info,
-                             :validate_station_selection_for_route,
-                             :select_station)
-      # добавляем станцию в маршрут!"
-      route.delete_station(station)
-      puts 'Станция успешно удалена в выбранном маршруте.'
-    end
-  end
-
-  # проверка ввода маршрута
-  def validate_route(name)
-    errors = []
-    errors << 'Станция отсутствует!' if @stations[name.to_sym].nil?
-    errors << 'Начальная и конечная станция маршрута не могут совпадать. Повторите ввод!' if @routes_endings[0].name == name
-    errors.empty? ? {success: true} : {success: false, 'errors': errors}
-  end
-
-  # проверка ввода названия станции в маршруте
-  def validate_route_name(name)
-    errors = []
-    errors << 'Маршрут с таким именем не существует, повторите ввод!' unless @routes[name.to_sym]
-    errors.empty? ? {success: true} : {success: false, 'errors': errors}
-  end
-
 end

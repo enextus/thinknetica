@@ -25,7 +25,7 @@ class Train
     @wagons.pop
   end
 
-  def receive_route(route)
+  def assign_route(route)
     @route = route
     @index = 0
     current_station.arrive(self)
