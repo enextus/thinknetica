@@ -1,7 +1,6 @@
-require "pry"
 # frozen_string_literal: true
 
-# Программа позволяет пользователю через текстовый интерфейс делать следующее:
+# Программа позволяет управлять ж/д
 
 # class AppController
 class AppController
