@@ -16,7 +16,7 @@ class Train
   end
 
   def add_wagon(wagon)
-    return unless speed.zero? && @type == wagon.type
+    return unless speed.zero?
     @wagons << wagon
   end
 
