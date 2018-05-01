@@ -107,6 +107,12 @@ class AppController
     response
   end
 
+  # ###############    0 - вспомогательные методы  ############################
+
+  def request_info_station
+    ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
+  end
+
   # ###############    1 - создание станции  ##################################
 
   # создание станции с валидацией ввода
@@ -127,9 +133,11 @@ class AppController
   def create_station!(name)
     station = Station.new(name)
     @stations[name.to_sym] = station
-    puts "\n Станция «#{station.name}» создана."
-    puts "\n Обьект станции создан «#{station.inspect}»"
-    puts "\n Станция сохранена в хеш станций «#{@stations}»"
+    station_created(station.name)
+  end
+
+  def station_created(name)
+    puts "\n Станция «#{name}» создана."
   end
 
   # ###############    2 - создание поезда  ###################################
@@ -160,9 +168,11 @@ class AppController
       train = CargoTrain.new(train_number)
     end
     @trains[train_number.to_sym] = train
-    puts "\n Позд номер: «#{train.train_number}» создан."
-    puts "\n Обьект поезд создан «#{train.inspect}»"
-    puts "\n Поезд сохранен в хеш поездов «#{@trains}»"
+    train_created(train.train_number)
+  end
+
+  def train_created(number)
+    puts "\n Позд номер: «#{number}» создан."
   end
 
   # ###############    3 - создание вагона  ##################################
@@ -191,10 +201,11 @@ class AppController
       wagon = CargoWagon.new
       @wagons['cargo'] << wagon
     end
+    wagon_created(wagon.type)
+  end
 
-    puts "\n Вагон типа: «#{wagon.type}» создан."
-    puts "\n Обьект вагон создан «#{wagon.inspect}»"
-    puts "\n Вагон сохранен в хеш вагонов «#{@wagons}»"
+  def wagon_created(type)
+    puts "\n Вагон типа: «#{type}» создан."
   end
 
   # ###############  4 - Посмотреть список вагонов с типом ###################
@@ -203,10 +214,18 @@ class AppController
   def list_wagons
     # binding.pry
     if @wagons['cargo'].empty? && @wagons['passenger'].empty?
-      puts 'Создайте минимум один вагон'
+      wagons_void
     else
-      puts "\n Вагоны: #{@wagons.map { |type, wagons| [type, wagons.count] }}"
+      wagons_list
     end
+  end
+
+  def wagons_void
+    puts 'Создайте минимум один вагон'
+  end
+
+  def wagons_list
+    puts "\n Вагоны: #{@wagons.map { |type, wagons| [type, wagons.count] }}"
   end
 
   # ###############    5 - добавление вагона к поезду #########################
@@ -214,21 +233,33 @@ class AppController
   # проверка добавления вагона к поезду
   def attach_wagon
     if @trains.empty? || @wagons['passenger'].empty? && @wagons['cargo'].empty?
-      puts 'Поезда или/и вагоны отсутствуют, сначала создайте их.'
+      trains_or_wagons_void
     elsif !check_trains_wagons
-      puts 'Вагоны нужных типов отсутствуют, создайте достаточное количество.'
+      wagons_type_void
     else
       request_info = ["Введите номер поезда: [#{@trains.keys.join(', ')}]: "]
       getting_info(request_info, :validate_train_selection_for_wagons, :attach_wagon!)
-      puts "\n Вагон прицеплен к поезду."
+      wagon_attached
     end
+  end
+
+  def trains_or_wagons_void
+    puts 'Поезда или/и вагоны отсутствуют, сначала создайте их.'
+  end
+
+  def wagons_type_void
+    puts 'Вагоны нужных типов отсутствуют, создайте достаточное количество.'
+  end
+
+  def wagon_attached
+    puts "\n Вагон прицеплен к поезду."
   end
 
   # проверка наличия минимума вагона соответсвующего типа к поезду
   def check_trains_wagons
     passenger_trains_amount = 0
     cargo_trains_amount = 0
-    @trains.each do |train_number, train|
+    @trains.each_value do |train|
       case train.type
       when 'passenger'
         passenger_trains_amount += 1
@@ -254,7 +285,7 @@ class AppController
     if check_wagons_for_train_type(train_number) && @trains[train_number.to_sym]
       { success: true }
     else
-      { success: false, 'errors': 'Поезда нет или нет вагонов нужного типа!' }
+      { success: false, 'errors': 'Нет поезда или вагонов нужного типа!' }
     end
   end
 
@@ -276,12 +307,20 @@ class AppController
   # проверка возможности отцепить вагон
   def detach_wagon
     if @trains.empty?
-      puts 'Поезда отсутствуют, создайте поезд.'
+      trains_void
     else
       request_info = ["Ввод номер поезда [#{@trains.keys.join(', ')}]: "]
       getting_info(request_info, :validate_train_selection, :detach_wagon!)
-      puts "\n Вагон успешно отцеплен от поезда."
+      wagon_detached
     end
+  end
+
+  def trains_void
+    puts 'Поезда отсутствуют, создайте поезд.'
+  end
+
+  def wagon_detached
+    puts "\n Вагон успешно отцеплен от поезда."
   end
 
   # проверка правильности номера поезда
@@ -304,21 +343,24 @@ class AppController
   # помещаем поезд на станцию
   def link_to_station
     if @trains.empty? || @stations.empty?
-      puts 'Создайте минимум один поезд и минимум одну станцию'
+      staions_or_trains_void
     else
       request_info = ["Ввод номер поезда [#{@trains.keys.join(', ')}]: "]
-      train = getting_info(request_info,
-                           :validate_train_selection,
-                           :select_train)
-      request_info = ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
-      station = getting_info(request_info,
-                             :validate_station_selection,
-                             :select_station)
+      train = getting_info(request_info, :validate_train_selection, :select_train)
+      request_info = request_info_station
+      station = getting_info(request_info, :validate_station_selection, :select_station)
       station.arrive(train)
-      puts "\n Поезд успешно помещен на станцию."
+      train_linked
     end
   end
 
+  def staions_or_trains_void
+    puts 'Создайте минимум один поезд и минимум одну станцию'
+  end
+
+  def train_linked
+    puts "\n Поезд успешно помещен на станцию."
+  end
   # метод validate_train_selection находиться в коде выше
 
   # проверка вьбранной станции
@@ -346,10 +388,18 @@ class AppController
   def list_stations
     # binding.pry
     if @stations.empty?
-      puts 'Создайте минимум одну станцию'
+      stations_void
     else
-      puts "\n Имеются следующее станции: [#{@stations.keys.join(', ')}]: "
+      stations_list
     end
+  end
+
+  def stations_void
+    puts 'Создайте минимум одну станцию'
+  end
+
+  def stations_list
+    puts "\n Имеются следующее станции: [#{@stations.keys.join(', ')}]: "
   end
 
   # ###############  9 - Посмотреть список поездов на станции   ###############
@@ -357,21 +407,35 @@ class AppController
   # список поездов на выбранной станции
   def list_trains_on_station
     if @trains.empty? || @stations.empty?
-      puts 'Создайте минимум один поезд и минимум одну станцию, если несозданы'
+      trains_or_stations_void
     else
-      request_info = ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
-      station = getting_info(request_info,
-                             :validate_station_selection,
-                             :select_station)
+      request_info = request_info_station
+      station = getting_info(request_info, :validate_station_selection, :select_station)
       if station.trains.any?
-        puts "\n На выбранной вами станции «#{station.name}» имеются поезда:"
+        trains_list_at_station(station.name)
         station.trains.each do |train|
-        puts "«#{train.train_number}», «#{train.type}», «#{train.wagons.size}»"
+          trains_type_wagons_info(train.train_number, train.type, train.wagons.size)
         end
       else
-        puts "\n На выбранной станции «#{station.name}» поезда отсутствуют."
+        at_station_trains_void(station.name)
       end
     end
+  end
+
+  def trains_or_stations_void
+    puts 'Создайте минимум один поезд и минимум одну станцию, если несозданы'
+  end
+
+  def trains_list_at_station(name)
+    puts "\n На выбранной вами станции «#{name}» имеются поезда:"
+  end
+
+  def trains_type_wagons_info(number, type, wagons)
+    puts "«#{number}», «#{type}», «#{wagons}»"
+  end
+
+  def at_station_trains_void(name)
+    puts "\n На выбранной станции «#{name}» поезда отсутствуют."
   end
 
   # ###############   10 - Создать маршрут   ###################################
@@ -379,12 +443,16 @@ class AppController
   # создаем маршрут
   def create_route
     if @stations.empty? || @stations.size < 2
-      puts 'Станции отсутствуют или их меньше двух. Создайте мин. две станции.'
+      stations_void_or_less_as_two
     else
       request_info = ["Ввод начальной станции [#{@stations.keys.join(', ')}]: ",
                       "Ввод конечной станции [#{@stations.keys.join(', ')}]: "]
       getting_info(request_info, :validate_stations_selection, :create_route!)
     end
+  end
+
+  def stations_void_or_less_as_two
+    puts 'Станции отсутствуют или их меньше двух. Создайте мин. две станции.'
   end
 
   # проверка станций для маршрута
@@ -400,8 +468,11 @@ class AppController
   def create_route!(first_station, last_station)
     route = Route.new(@stations[first_station.to_sym], @stations[last_station.to_sym])
     @routes[route.name.to_sym] = route
-    puts "Маршрут «#{route.name}» создан."
-    puts "Маршрут сохранен в хеш маршрутов «#{@routes}»"
+    route_created(route.name)
+  end
+
+  def route_created(name)
+    puts "Маршрут «#{name}» создан."
   end
 
   # ############### 11 - Добавитъ станцию в маршрут ############################
@@ -409,22 +480,26 @@ class AppController
   # выбор маршрута и станции для добавления
   def add_station_in_to_route
     if @routes.empty?
-      puts 'Маршруты отсутствуют, создайте маршрут.'
+      routes_void
     else
       # вводим название маршрута
       request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
-      route = getting_info(request_info,
-                           :validate_route_selection,
-                           :select_route)
+      route = getting_info(request_info, :validate_route_selection, :select_route)
       # вводим название станции
-      request_info = ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
-      station = getting_info(request_info,
-                             :validate_station_selection_for_route,
-                             :select_station)
+      request_info = request_info_station
+      station = getting_info(request_info, :validate_station_selection_for_route, :select_station)
       # добавляем станцию в маршрут!"
       route.add_station(station)
-      puts 'Станция успешно добавлена к выбранному маршруту.'
+      station_added
     end
+  end
+
+  def routes_void
+    puts 'Маршруты отсутствуют, создайте маршрут.'
+  end
+
+  def station_added
+    puts 'Станция успешно добавлена к выбранному маршруту.'
   end
 
   # проверка выбранного маршрута
@@ -453,24 +528,20 @@ class AppController
   # выбор маршрута и станции для удаления
   def delete_station_in_route
     if @routes.empty?
-      puts 'Маршруты отсутствуют, создайте маршрут.'
+      routes_void
     else
       # вводим название маршрута
       request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
-      route = getting_info(request_info,
-                           :validate_route_selection,
-                           :select_route)
+      route = getting_info(request_info, :validate_route_selection, :select_route)
 
       # вводим название станции
       all_stations = route.stations.map { |station| station.name }.join(', ')
       request_info = ["Ввод название станции [#{all_stations}]: "]
-      station = getting_info(request_info,
-                             :validate_station_selection_for_route,
-                             :select_station)
+      station = getting_info(request_info, :validate_station_selection_for_route, :select_station)
 
       # добавляем станцию в маршрут!"
       route.delete_station(station)
-      puts 'Станция успешно удалена в выбранном маршруте.'
+      station_added
     end
   end
 
@@ -478,41 +549,43 @@ class AppController
 
   def delete_route
     if @routes.empty?
-      puts 'Маршруты отсутствуют, создайте маршрут.'
+      routes_void
     else
       # вводим название маршрута
       request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
-      getting_info(request_info,
-                           :validate_route_selection,
-                           :delete_route!)
+      getting_info(request_info, :validate_route_selection, :delete_route!)
     end
   end
 
   # удаляем маршрут в списке маршрутов"
   def delete_route!(name)
     @routes.delete(name.to_sym)
+    route_added_to_list
+  end
+
+  def route_added_to_list
     puts 'Маршрут успешно удалена в списке маршрутов.'
   end
 
   # ############### 14 - Назначать маршрут поезду  ############################
   def assign_route_to_train
     if @routes.empty? || @trains.empty?
-      puts 'Маршруты или поезда отсутствуют, создайте!'
+      routes_or_trains_void
     else
       # вводим название маршрута
       request_info = ["Ввод название маршрута [#{@routes.keys.join(', ')}]: "]
-      route = getting_info(request_info,
-                           :validate_route_selection,
-                           :select_route)
+      route = getting_info(request_info, :validate_route_selection, :select_route)
 
       request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
-      train = getting_info(request_info,
-                           :validate_train_for_assign,
-                           :select_train)
+      train = getting_info(request_info, :validate_train_for_assign, :select_train)
 
       # назначаем маршрут поезду
       train.assign_route(route)
     end
+  end
+
+  def routes_or_trains_void
+    puts 'Маршруты или поезда отсутствуют, создайте!'
   end
 
   # проверка ввода названия поезда
@@ -527,33 +600,37 @@ class AppController
   # ############### 15 - Переместить поезд по маршруту вперед   ###############
   def move_train_forward_by_route
     if @routes.empty? || @trains.empty?
-      puts 'Маршруты или поезда отсутствуют, создайте!'
+      routes_or_trains_void
     else
       request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
-      train = getting_info(request_info,
-                           :validate_train_for_assign,
-                           :select_train)
+      train = getting_info(request_info, :validate_train_for_assign, :select_train)
 
       # назначаем маршрут поезду
       train.move_train_forward
-      puts 'Поезд перемещен вперед по маршруту.'
+      train_moved_forward_by_route
     end
+  end
+
+  def train_moved_forward_by_route
+    puts 'Поезд перемещен вперед по маршруту.'
   end
 
   # ###############  16 - Переместить поезд по маршруту назад   ###############
   def move_train_backward_by_route
     if @routes.empty? || @trains.empty?
-      puts 'Маршруты или поезда отсутствуют, создайте!'
+      routes_or_trains_void
     else
       request_info = ["Ввод названия поезда [#{@trains.keys.join(', ')}]: "]
-      train = getting_info(request_info,
-                           :validate_train_for_assign,
-                           :select_train)
+      train = getting_info(request_info, :validate_train_for_assign, :select_train)
 
       # назначаем маршрут поезду
       train.move_train_backward
-      puts 'Поезд перемещен назад по маршруту.'
+      train_moved_backward_by_route
     end
+  end
+
+  def train_moved_backward_by_route
+    puts 'Поезд перемещен назад по маршруту.'
   end
 
   # ############### 17 - Посмотреть список созданных маршрутов ################
@@ -561,12 +638,14 @@ class AppController
   # список имеющихся маршрутов
   def show_all_routes
     if @routes.empty?
-      puts 'Создайте минимум один маршрут'
+      routes_void
     else
-      puts BORDERLINE
-      puts "Имеются следующее маршруты: [#{@routes.keys.join(', ')}]: "
-
+      routes_list
       @routes.each { |route| puts route.inspect }
     end
+  end
+
+  def routes_list
+    puts "Имеются следующее маршруты: [#{@routes.keys.join(', ')}]: "
   end
 end
