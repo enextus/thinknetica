@@ -12,6 +12,12 @@ class Train
     @wagons = []
   end
 
+  # метод класса find, который принимает номер поезда и возвращает объект поезда
+  # по номеру или nil, если поезд с таким номером не найден.
+  def self.find(train_number)
+    @trains.find(train_number)
+  end
+
   def current_wagons_number
     @wagons.size
   end
