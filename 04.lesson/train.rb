@@ -2,6 +2,7 @@
 
 # class Train
 class Train
+  include CompanyName
   attr_reader :train_number, :type, :speed, :wagons, :route
 
   def initialize(train_number, type)
