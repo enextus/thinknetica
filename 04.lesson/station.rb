@@ -2,11 +2,18 @@
 
 # class Station
 class Station
+  @@all_stations = 0
+
+  # возвращает все станции (объекты), созданные на данный момент
+  def self.all
+    @@all_stations
+  end
   attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
+    @@all_stations += 1
   end
 
   def return_type(type)
