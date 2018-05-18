@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 # Программа позволяет управлять ж/д
 
 # class AppController
@@ -212,7 +210,6 @@ class AppController
 
   # список имеющихся вагонов
   def list_wagons
-    # binding.pry
     if @wagons['cargo'].empty? && @wagons['passenger'].empty?
       wagons_void
     else
@@ -386,7 +383,6 @@ class AppController
 
   # список имеющихся станций
   def list_stations
-    # binding.pry
     if @stations.empty?
       stations_void
     else
