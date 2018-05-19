@@ -4,17 +4,20 @@
 class Train
   include CompanyName
 
-  def self.find(train_number)
-    @trains.find(train_number)
+  @@trains = {}
+
+  def self.find(number)
+    @@trains[number]
   end
 
-  attr_reader :train_number, :type, :speed, :wagons, :route
+  attr_reader :number, :type, :speed, :wagons, :route
 
-  def initialize(train_number, type)
-    @train_number = train_number
+  def initialize(number, type)
+    @number = number
     @type = type
     @speed = 0
     @wagons = []
+    @@trains[number] = self
   end
 
   def current_wagons_number

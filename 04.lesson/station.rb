@@ -13,6 +13,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    @@all_stations << self
   end
 
   def return_type(type)

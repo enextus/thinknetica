@@ -148,25 +148,25 @@ class AppController
   end
 
   # проверка ввода названия и типа поезда
-  def validate_train(type, train_number)
+  def validate_train(type, number)
     errors = []
     valid_types = %w[1 2]
-    errors << 'Номер поезда не может быть пуст!' if train_number.empty?
+    errors << 'Номер поезда не может быть пуст!' if number.empty?
     errors << 'Неверный тип! Есть тип 1 и 2!' unless valid_types.include?(type)
-    errors << 'Поезд с таким номером уже есть!' if @trains[train_number.to_sym]
+    errors << 'Поезд с таким номером уже есть!' if @trains[number.to_sym]
     errors.empty? ? { success: true } : { success: false, 'errors': errors }
   end
 
   # записъ созданного поезда в хеш поездов
-  def create_train!(type, train_number)
+  def create_train!(type, number)
     case type
     when '1'
-      train = PassengerTrain.new(train_number)
+      train = PassengerTrain.new(number)
     when '2'
-      train = CargoTrain.new(train_number)
+      train = CargoTrain.new(number)
     end
-    @trains[train_number.to_sym] = train
-    train_created(train.train_number)
+    @trains[number.to_sym] = train
+    train_created(train.number)
   end
 
   def train_created(number)
@@ -278,8 +278,8 @@ class AppController
   end
 
   # проверка правильности номера поезда
-  def validate_train_selection_for_wagons(train_number)
-    if check_wagons_for_train_type(train_number) && @trains[train_number.to_sym]
+  def validate_train_selection_for_wagons(number)
+    if check_wagons_for_train_type(number) && @trains[number.to_sym]
       { success: true }
     else
       { success: false, 'errors': 'Нет поезда или вагонов нужного типа!' }
@@ -287,13 +287,13 @@ class AppController
   end
 
   # проверка наличия вагонов
-  def check_wagons_for_train_type(train_number)
-    @wagons[@trains[train_number.to_sym].type].any?
+  def check_wagons_for_train_type(number)
+    @wagons[@trains[number.to_sym].type].any?
   end
 
   # добавляем вагон к поезду
-  def attach_wagon!(train_number)
-    selected_train = select_train(train_number)
+  def attach_wagon!(number)
+    selected_train = select_train(number)
     wagon = @wagons[selected_train.type].last
     selected_train.add_wagon(wagon)
     @wagons[selected_train.type].delete(wagon)
@@ -321,8 +321,8 @@ class AppController
   end
 
   # проверка правильности номера поезда
-  def validate_train_selection(train_number)
-    if @trains[train_number.to_sym]
+  def validate_train_selection(number)
+    if @trains[number.to_sym]
       { success: true }
     else
       { success: false, 'errors': 'Поезда нет!' }
@@ -330,9 +330,9 @@ class AppController
   end
 
   # отцепка вагонa
-  def detach_wagon!(train_number)
-    deleted_wagon = select_train(train_number).delete_wagon
-    @wagons[select_train(train_number).type] << deleted_wagon
+  def detach_wagon!(number)
+    deleted_wagon = select_train(number).delete_wagon
+    @wagons[select_train(number).type] << deleted_wagon
   end
 
   # ###############  7 - Помещение поезда на станцию ##########################
@@ -370,8 +370,8 @@ class AppController
   end
 
   # выбираем поезд
-  def select_train(train_number)
-    @trains[train_number.to_sym]
+  def select_train(number)
+    @trains[number.to_sym]
   end
 
   # выбираем станцию
@@ -410,7 +410,7 @@ class AppController
       if station.trains.any?
         trains_list_at_station(station.name)
         station.trains.each do |train|
-          trains_type_wagons_info(train.train_number, train.type, train.wagons.size)
+          trains_type_wagons_info(train.number, train.type, train.wagons.size)
         end
       else
         at_station_trains_void(station.name)
@@ -585,8 +585,8 @@ class AppController
   end
 
   # проверка ввода названия поезда
-  def validate_train_for_assign(train_number)
-    if @trains[train_number.to_sym]
+  def validate_train_for_assign(number)
+    if @trains[number.to_sym]
       { success: true }
     else
       { success: false, 'errors': 'Поезда нет или ввод пуст, повторите!' }
