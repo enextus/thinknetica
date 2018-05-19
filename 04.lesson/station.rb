@@ -2,7 +2,7 @@
 
 # class Station
 class Station
-  @@all_stations = 0
+  @@all_stations = []
 
   def self.all
     @@all_stations
@@ -13,7 +13,6 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
-    @@all_stations += 1
   end
 
   def return_type(type)
