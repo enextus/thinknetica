@@ -2,6 +2,8 @@
 
 # class Station
 class Station
+  include InstanceCounter
+
   @@all_stations = []
 
   def self.all
@@ -14,6 +16,7 @@ class Station
     @name = name
     @trains = []
     @@all_stations << self
+    register_instance
   end
 
   def return_type(type)

@@ -3,6 +3,7 @@
 # class Train
 class Train
   include CompanyName
+  include InstanceCounter
 
   @@trains = {}
 
@@ -18,6 +19,7 @@ class Train
     @speed = 0
     @wagons = []
     @@trains[number] = self
+    register_instance
   end
 
   def current_wagons_number
