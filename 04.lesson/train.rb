@@ -3,6 +3,11 @@
 # class Train
 class Train
   include CompanyName
+
+  def self.find(train_number)
+    @trains.find(train_number)
+  end
+
   attr_reader :train_number, :type, :speed, :wagons, :route
 
   def initialize(train_number, type)
@@ -10,12 +15,6 @@ class Train
     @type = type
     @speed = 0
     @wagons = []
-  end
-
-  # метод класса find, который принимает номер поезда и возвращает объект поезда
-  # по номеру или nil, если поезд с таким номером не найден.
-  def self.find(train_number)
-    @trains.find(train_number)
   end
 
   def current_wagons_number

@@ -4,10 +4,10 @@
 class Station
   @@all_stations = 0
 
-  # возвращает все станции (объекты), созданные на данный момент
   def self.all
     @@all_stations
   end
+
   attr_reader :name, :trains
 
   def initialize(name)
