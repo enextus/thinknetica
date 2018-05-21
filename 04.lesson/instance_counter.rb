@@ -16,7 +16,6 @@ module InstanceCounter
 
     def instances
       @instances ||= 0
-      @instances
     end
   end
 
