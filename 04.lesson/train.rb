@@ -20,6 +20,13 @@ class Train
     @wagons = []
     @@trains[number] = self
     register_instance
+    validate!
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
   end
 
   def current_wagons_number
@@ -78,5 +85,14 @@ class Train
   def decelerate(value)
     return if value.negative? || @speed < value
     @speed -= value
+  end
+
+  protected
+
+  def validate!
+    raise 'Номер не может быть пустым' if @number.nil? || @number.empty?
+    # raise 'В номере не допускаются пробелы!' if @number !~ /^\S*$/
+    raise 'Неверный формат номера! ((1..3)-?(1..2))' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
+    true
   end
 end

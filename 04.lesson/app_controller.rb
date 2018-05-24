@@ -82,7 +82,7 @@ class AppController
 
   private
 
-  # ввод текстовой информации и формирования меню
+  # ввод информации и формирование меню программы
   def getting_info(request_info, validator, success_callback)
     response = nil
 
