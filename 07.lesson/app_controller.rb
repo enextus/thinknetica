@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Программа позволяет управлять ж/д
-
-# class AppController
+# class AppController позволяет управлять ж/д
 class AppController
   attr_reader :stations, :trains, :routes, :wagons
 
@@ -16,22 +14,23 @@ class AppController
   def show_actions
     messages = ['Выберите желаемое действие, введя условный номер из списка: ',
                 ' 1 - Создать станцию',
-                ' 2 - Создать поезд',
-                ' 3 - Создать вагон',
-                ' 4 - Посмотреть список вагонов',
-                ' 5 - Прицепить к поезду вагон из пула вагонов',
-                ' 6 - Отцепить вагон от поезда в пул вагонов',
-                ' 7 - Поместить поезд на станцию',
-                ' 8 - Посмотреть список станций',
-                ' 9 - Посмотреть список поездов на станции',
-                ' 10 - Создать маршрут',
-                ' 11 - Добавитъ станцию в маршрут',
-                ' 12 - Удалитъ станцию в маршруте',
-                ' 13 - Удалить маршрут',
-                ' 14 - Назначать маршрут поезду',
-                ' 15 - Переместить поезд по маршруту вперед',
-                ' 16 - Переместить поезд по маршруту назад',
-                ' 17 - Посмотреть список созданных маршрутов',
+                ' 2 - Создать пассажирский поезд',
+                ' 3 - Создать грузовой поезд',
+                ' 4 - Создать вагон',
+                ' 5 - Посмотреть список вагонов',
+                ' 6 - Прицепить к поезду вагон из пула вагонов',
+                ' 7 - Отцепить вагон от поезда в пул вагонов',
+                ' 8 - Поместить поезд на станцию',
+                ' 9 - Посмотреть список станций',
+                ' 10 - Посмотреть список поездов на станции',
+                ' 11 - Создать маршрут',
+                ' 12 - Добавитъ станцию в маршрут',
+                ' 13 - Удалитъ станцию в маршруте',
+                ' 14 - Удалить маршрут',
+                ' 15 - Назначать маршрут поезду',
+                ' 16 - Переместить поезд по маршруту вперед',
+                ' 17 - Переместить поезд по маршруту назад',
+                ' 18 - Посмотреть список созданных маршрутов',
                 BORDERLINE.to_s,
                 'Для выхода из меню введите: exit',
                 BORDERLINE.to_s]
@@ -43,36 +42,38 @@ class AppController
     when '1'
       create_station
     when '2'
-      create_train
+      create_passenger_train
     when '3'
-      create_wagon
+      create_cargo_train
     when '4'
-      list_wagons
+      create_wagon
     when '5'
-      attach_wagon
+      list_wagons
     when '6'
-      detach_wagon
+      attach_wagon
     when '7'
-      link_to_station
+      detach_wagon
     when '8'
-      list_stations
+      link_to_station
     when '9'
-      list_trains_on_station
+      list_stations
     when '10'
-      create_route
+      list_trains_on_station
     when '11'
-      add_station_in_to_route
+      create_route
     when '12'
-      delete_station_in_route
+      add_station_in_to_route
     when '13'
-      delete_route
+      delete_station_in_route
     when '14'
-      assign_route_to_train
+      delete_route
     when '15'
-      move_train_forward_by_route
+      assign_route_to_train
     when '16'
-      move_train_backward_by_route
+      move_train_forward_by_route
     when '17'
+      move_train_backward_by_route
+    when '18'
       show_all_routes
     else
       puts 'Повторите ввод!'
@@ -138,42 +139,55 @@ class AppController
     puts "\n Станция «#{name}» создана."
   end
 
-  # ###############    2 - создание поезда  ###################################
+  # ###############    2 - создание пассажирского поезда  ######################
 
-  # создание поезда с валидацией ввода
-  def create_train
-    request_info = ['Укажите тип поезда (1 - пассажирский, 2 - грузовой): ',
-                    'Ввод номер поезда: ']
-    getting_info(request_info, :validate_train, :create_train!)
-  end
+  # создание пассажирского поезда
+  def create_passenger_train
+    message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
 
-  # проверка ввода названия и типа поезда
-  def validate_train(type, number)
-    errors = []
-    valid_types = %w[1 2]
-    errors << 'Номер поезда не может быть пуст!' if number.empty?
-    errors << 'Неверный тип! Есть тип 1 и 2!' unless valid_types.include?(type)
-    errors << 'Поезд с таким номером уже есть!' if @trains[number.to_sym]
-    errors.empty? ? { success: true } : { success: false, 'errors': errors }
-  end
+    loop do
+      print message
+      number = gets.chomp
 
-  # записъ созданного поезда в хеш поездов
-  def create_train!(type, number)
-    case type
-    when '1'
       train = PassengerTrain.new(number)
-    when '2'
-      train = CargoTrain.new(number)
+
+      @trains[number.to_sym] = train
+
+      train_created(train.number)
+      break
     end
-    @trains[number.to_sym] = train
-    train_created(train.number)
+  rescue StandardError => e
+    puts e.message
+    retry
   end
 
   def train_created(number)
-    puts "\n Позд номер: «#{number}» создан."
+    puts "\n Поезд номер: «#{number}» успешно создан."
   end
 
-  # ###############    3 - создание вагона  ##################################
+    # ###############    3 - создание грузого поезда  ####################
+
+  # создание грузого поезда
+  def create_cargo_train
+    message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
+
+    loop do
+      print message
+      number = gets.chomp
+
+      train = CargoTrain.new(number)
+
+      @trains[number.to_sym] = train
+
+      train_created(train.number)
+      break
+    end
+  rescue StandardError => e
+    puts e.message
+    retry
+  end
+
+  # ###############    4 - создание вагона  ####################################
 
   # создание вагона с валидацией ввода
   def create_wagon
@@ -206,7 +220,7 @@ class AppController
     puts "\n Вагон типа: «#{type}» создан."
   end
 
-  # ###############  4 - Посмотреть список вагонов с типом ###################
+  # ###############  5 - Посмотреть список вагонов с типом #####################
 
   # список имеющихся вагонов
   def list_wagons
@@ -225,7 +239,7 @@ class AppController
     puts "\n Вагоны: #{@wagons.map { |type, wagons| [type, wagons.count] }}"
   end
 
-  # ###############    5 - добавление вагона к поезду #########################
+  # ###############    6 - добавление вагона к поезду #########################
 
   # проверка добавления вагона к поезду
   def attach_wagon
@@ -299,7 +313,7 @@ class AppController
     @wagons[selected_train.type].delete(wagon)
   end
 
-  # ###############    6 - отцепка вагона от поезда ###########################
+  # ###############    7 - отцепка вагона от поезда ###########################
 
   # проверка возможности отцепить вагон
   def detach_wagon
@@ -335,7 +349,7 @@ class AppController
     @wagons[select_train(number).type] << deleted_wagon
   end
 
-  # ###############  7 - Помещение поезда на станцию ##########################
+  # ###############  8 - Помещение поезда на станцию ##########################
 
   # помещаем поезд на станцию
   def link_to_station
@@ -379,7 +393,7 @@ class AppController
     @stations[name.to_sym]
   end
 
-  # ###############  8 - Посмотреть список станций ############################
+  # ###############  9 - Посмотреть список станций ############################
 
   # список имеющихся станций
   def list_stations
@@ -398,7 +412,7 @@ class AppController
     puts "\n Имеются следующее станции: [#{@stations.keys.join(', ')}]"
   end
 
-  # ###############  9 - Посмотреть список поездов на станции   ###############
+  # ###############  10 - Посмотреть список поездов на станции   ###############
 
   # список поездов на выбранной станции
   def list_trains_on_station
@@ -434,7 +448,7 @@ class AppController
     puts "\n На выбранной станции «#{name}» поезда отсутствуют."
   end
 
-  # ###############   10 - Создать маршрут   ###################################
+  # ###############   11 - Создать маршрут   ###################################
 
   # создаем маршрут
   def create_route
@@ -471,7 +485,7 @@ class AppController
     puts "Маршрут «#{name}» создан."
   end
 
-  # ############### 11 - Добавитъ станцию в маршрут ############################
+  # ############### 12 - Добавитъ станцию в маршрут ############################
 
   # выбор маршрута и станции для добавления
   def add_station_in_to_route
@@ -519,7 +533,7 @@ class AppController
     errors.empty? ? {success: true} : {success: false, 'errors': errors}
   end
 
-  # ############### 12 - Удалитъ станцию в маршруте ###########################
+  # ############### 13 - Удалитъ станцию в маршруте ############################
 
   # выбор маршрута и станции для удаления
   def delete_station_in_route
@@ -541,8 +555,7 @@ class AppController
     end
   end
 
-  # ############### 13 - Удалить маршрут ######################################
-
+  # ############### 14 - Удалить маршрут #######################################
   def delete_route
     if @routes.empty?
       routes_void
@@ -563,7 +576,7 @@ class AppController
     puts 'Маршрут успешно удалена в списке маршрутов.'
   end
 
-  # ############### 14 - Назначать маршрут поезду  ############################
+  # ############### 15 - Назначать маршрут поезду  ############################
   def assign_route_to_train
     if @routes.empty? || @trains.empty?
       routes_or_trains_void
@@ -593,7 +606,7 @@ class AppController
     end
   end
 
-  # ############### 15 - Переместить поезд по маршруту вперед   ###############
+  # ############### 16 - Переместить поезд по маршруту вперед   ###############
   def move_train_forward_by_route
     if @routes.empty? || @trains.empty?
       routes_or_trains_void
@@ -611,7 +624,7 @@ class AppController
     puts 'Поезд перемещен вперед по маршруту.'
   end
 
-  # ###############  16 - Переместить поезд по маршруту назад   ###############
+  # ###############  17 - Переместить поезд по маршруту назад   ###############
   def move_train_backward_by_route
     if @routes.empty? || @trains.empty?
       routes_or_trains_void
@@ -629,7 +642,7 @@ class AppController
     puts 'Поезд перемещен назад по маршруту.'
   end
 
-  # ############### 17 - Посмотреть список созданных маршрутов ################
+  # ############### 18 - Посмотреть список созданных маршрутов ################
 
   # список имеющихся маршрутов
   def show_all_routes

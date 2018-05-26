@@ -85,20 +85,9 @@ class Train
   protected
 
   def validate!
-    type = %w[passenger cargo]
-    raise 'Номер не может быть пустым' if @number.nil? || @number.empty?
-    raise 'Неверный формат номера! ((1..3)-?(1..2))' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
-    raise 'Несуществующий тип поезда' unless type.include? @type
+    # type = %w[passenger cargo]
+    # raise 'Несуществующий тип поезда' unless type.include? @type
+    raise 'Номер не может быть пустым, повторите ввод!' if @number.nil? || @number.empty?
+    raise 'Неверный формат номера, повторите ввод!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
   end
-
-  begin
-    validate!
-  rescue => e
-   raise e.message
-   puts "hier"
-  retry
-  end
-
-
-
 end
