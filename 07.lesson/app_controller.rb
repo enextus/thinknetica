@@ -42,9 +42,9 @@ class AppController
     when '1'
       create_station
     when '2'
-      create_passenger_train
+      create_train('passenger')
     when '3'
-      create_cargo_train
+      create_train('cargo')
     when '4'
       create_wagon
     when '5'
@@ -139,52 +139,44 @@ class AppController
     puts "\n Станция «#{name}» создана."
   end
 
-  # ###############    2 - создание пассажирского поезда  ######################
+  # ###############    2 + 3 - создание поезда  ################################
 
-  # создание пассажирского поезда
-  def create_passenger_train
-    message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
-
-    loop do
-      print message
-      number = gets.chomp
-
-      train = PassengerTrain.new(number)
-
-      @trains[number.to_sym] = train
-
-      train_created(train.number)
-      break
-    end
-  rescue StandardError => e
-    puts e.message
-    retry
+  def message_create_train
+    @message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
   end
 
-  def train_created(number)
-    puts "\n Поезд номер: «#{number}» успешно создан."
-  end
-
-    # ###############    3 - создание грузого поезда  ####################
-
-  # создание грузого поезда
-  def create_cargo_train
-    message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
-
+  # создание поезда
+  def create_train(type)
+    message_create_train
+    created_train = nil
     loop do
-      print message
+      print @message
       number = gets.chomp
 
-      train = CargoTrain.new(number)
+      case type
+      when 'passenger'
+        train = PassengerTrain.new(number)
+      when 'cargo'
+        train = CargoTrain.new(number)
+      end
 
-      @trains[number.to_sym] = train
+      created_train = @trains[number.to_sym] = train
 
-      train_created(train.number)
       break
     end
-  rescue StandardError => e
-    puts e.message
+  rescue StandardError => exception
+    error_message(exception)
     retry
+  else
+    message_train_created(created_train.number)
+  end
+
+  def error_message(exception)
+    puts exception.message
+  end
+
+  def message_train_created(number)
+    puts "\nПоезд номер [#{number}] успешно создан."
   end
 
   # ###############    4 - создание вагона  ####################################
