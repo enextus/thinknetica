@@ -176,7 +176,7 @@ class AppController
   end
 
   def message_train_created(number)
-    puts "\nПоезд номер [#{number}] успешно создан."
+    puts "\nПоезд номер [#{number}] успешно создан!"
   end
 
   # ###############    4 - создание вагона  ####################################
