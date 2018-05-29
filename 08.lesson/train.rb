@@ -82,6 +82,11 @@ class Train
     @speed -= value
   end
 
+
+  def wagon_to_block(train, &block)
+    train.wagon.each { |wagon| yield(wagon) }
+  end
+
   protected
 
   def validate!
