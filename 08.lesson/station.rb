@@ -34,6 +34,10 @@ class Station
     @trains.delete(train)
   end
 
+  def train_to_block(station, &block)
+    station.trains.each { |train| yield(train) }
+  end
+
   protected
 
   def validate!
