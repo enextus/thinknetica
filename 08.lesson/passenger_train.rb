@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # class PassengerTrain
-class PassengerTrain < Train  
-  def initialize(train_number)
-    super(train_number, 'passenger')
+class PassengerTrain < Train
+  def initialize(number)
+    super(number, 'passenger')
   end
 
   def add_wagon(wagon)

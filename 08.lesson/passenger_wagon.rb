@@ -3,12 +3,10 @@
 
 # class CargoWagon
 class PassengerWagon < Wagon
-  attr_reader :place_capacity
-
-  def initialize(place_capacity)
-    super('passenger')
-    @place_capacity = place_capacity
-    @free_places_amount = @place_capacity if @place_capacity.positive?
+  def initialize(capacity)
+    super(capacity, 'passenger')
+    @capacity = @capacity.to_i
+    @free_places_amount = @capacity if @capacity.positive?
     @free_places_amount ||= 0
   end
 
@@ -18,10 +16,10 @@ class PassengerWagon < Wagon
   end
 
   def how_places_are_booked
-    @place_capacity - @free_places_amount
+    @capacity - @free_places_amount
   end
 
   def free_places_amount
-    @place_capacity - how_places_are_booked
+    @capacity - how_places_are_booked
   end
 end

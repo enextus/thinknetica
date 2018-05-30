@@ -3,25 +3,23 @@
 
 # class CargoWagon
 class CargoWagon < Wagon
-  attr_reader :volume_capacity
-
-  def initialize(volume_capacity)
-    super('cargo')
-    @volume_capacity = volume_capacity
-    @free_volume_amount = @volume_capacity if @volume_capacity.positive?
+  def initialize(capacity)
+    super(capacity, 'cargo')
+    @capacity = @capacity.to_i
+    @free_volume_amount = @capacity if @capacity.positive?
     @free_volume_amount ||= 0
   end
 
-  def charge_volume_amount(amount)
+  def load_volume_amount(amount)
     return if amount > @free_volume_amount || @free_volume_amount.zero?
     @free_volume_amount -= amount
   end
 
-  def how_much_volume_was_charged
-    @volume_capacity - @free_volume_amount
+  def how_much_volume_is_loaded
+    @capacity - @free_volume_amount
   end
 
   def free_volume_amount
-    @volume_capacity - how_much_volume_was_charged
+    @capacity - how_much_volume_is_loaded
   end
 end
