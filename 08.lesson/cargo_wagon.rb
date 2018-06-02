@@ -5,21 +5,15 @@
 class CargoWagon < Wagon
   def initialize(capacity)
     super(capacity, 'cargo')
-    @capacity = @capacity.to_i
-    @free_volume_amount = @capacity if @capacity.positive?
-    @free_volume_amount ||= 0
+    @free_capacity = @capacity
   end
 
-  def load_volume_amount(amount)
-    return if amount > @free_volume_amount || @free_volume_amount.zero?
-    @free_volume_amount -= amount
+  def load_volume(amount)
+    return if amount > @free_capacity || @free_capacity.zero?
+    @free_capacity -= amount
   end
 
-  def how_much_volume_is_loaded
-    @capacity - @free_volume_amount
-  end
-
-  def free_volume_amount
-    @capacity - how_much_volume_is_loaded
+  def loaded_capacity
+    @capacity - @free_capacity
   end
 end
