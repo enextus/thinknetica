@@ -16,7 +16,7 @@ class Wagon
   protected
 
   def validate!
-    raise 'Параметр не может быть пустым, повторите ввод!' if @capacity.nil? || @capacity.empty?
-    raise 'Только положительное числовое значение, повторите ввод!' if @capacity !~ /^[0-9]+$/
+    raise 'Неверный формат, повторите ввод!' if !@capacity.kind_of? Integer
+    raise 'Неверный формат, повторите ввод!' if !@capacity.positive?
   end
 end
