@@ -11,6 +11,11 @@ class Wagon
     @capacity = capacity
     validate!
     @type = type
+    @free_capacity = @capacity
+  end
+
+  def loaded_capacity
+    @capacity - @free_capacity
   end
 
   protected
