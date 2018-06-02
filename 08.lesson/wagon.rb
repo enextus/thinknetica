@@ -16,7 +16,6 @@ class Wagon
   protected
 
   def validate!
-    raise 'Неверный формат, повторите ввод!' if !@capacity.kind_of? Integer
-    raise 'Неверный формат, повторите ввод!' if !@capacity.positive?
+    raise 'Неверный формат, повторите ввод!' unless @capacity.positive?
   end
 end
