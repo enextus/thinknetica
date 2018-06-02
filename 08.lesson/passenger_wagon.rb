@@ -5,19 +5,15 @@
 class PassengerWagon < Wagon
   def initialize(capacity)
     super(capacity, 'passenger')
-    @free_places_amount = @capacity
+    @free_capacity = @capacity
   end
 
   def booking_single_place
-    return if @free_places_amount.zero?
-    @free_places_amount -= 1
+    return if @free_capacity.zero?
+    @free_capacity -= 1
   end
 
-  def how_places_are_booked
-    @capacity - @free_places_amount
-  end
-
-  def free_places_amount
-    @capacity - how_places_are_booked
+  def loaded_capacity
+    @capacity - @free_capacity
   end
 end
