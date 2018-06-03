@@ -82,13 +82,8 @@ class Train
     @speed -= value
   end
 
-  def wagon_to_block(train, &block)
-    train.wagons.each do |wagon|
-      yield
-      puts "Вместимость: #{wagon.capacity}"
-      puts "Тип вагона: #{wagon.type}"
-      puts BORDERLINE.to_s
-    end
+  def each_wagon(&block)
+    wagons.each { |wagon| block.call(wagon) }
   end
 
   protected

@@ -5,7 +5,7 @@ class Wagon
   include CompanyName
   include Validation
 
-  attr_reader :type, :capacity
+  attr_reader :type, :capacity, :free_capacity
 
   def initialize(capacity, type)
     @capacity = capacity

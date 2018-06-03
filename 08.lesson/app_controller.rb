@@ -166,6 +166,8 @@ class AppController
         train = CargoTrain.new(number)
       end
 
+      p train
+
       created_train = @trains[number.to_sym] = train
 
       break
@@ -309,6 +311,7 @@ class AppController
     selected_train = select_train(number)
     wagon = @wagons[selected_train.type].last
     selected_train.add_wagon(wagon)
+          p selected_train
     @wagons[selected_train.type].delete(wagon)
   end
 
@@ -437,7 +440,7 @@ class AppController
   end
 
   def trains_type_wagons_info(number, type, wagons)
-    puts "Номер «#{number}», тип «#{type}», в составе «#{wagons}» вагон(а)"
+    puts "Номер «#{number}», тип «#{type}», в составе #{wagons} вагон(а)"
   end
 
   def at_station_trains_void(name)
@@ -662,7 +665,7 @@ class AppController
   end
 
   # проверка правильности номера поезда
-  def validate_train_selection_for_wagons_show(number)
+  def validate_train_for_wagons_show(number)
     if @trains[number.to_sym]
       { success: true }
     else
@@ -670,9 +673,17 @@ class AppController
     end
   end
 
-  # добавляем вагон к поезду
+  # показать вагоны в поезде
   def show_wagon(number)
     selected_train = select_train(number)
-    selected_train.wagon_to_block(selected_train) { puts 'Характеристики вагона' }
+    selected_train.each_wagon do |wagon|
+      puts ''
+      p wagon
+      puts "Вместимость: #{wagon.capacity}"
+      puts "Тип вагона: #{wagon.type}"
+      puts "Free capacity: #{wagon.free_capacity}"
+      puts BORDERLINE.to_s
+    end
   end
+
 end
