@@ -33,6 +33,9 @@ class AppController
                 ' 18 - Переместить поезд по маршруту назад',
                 ' 19 - Посмотреть список созданных маршрутов',
                 ' 20 - Выводить список вагонов у поезда',
+                ' 21 - Выводить список поездов на станции',
+                ' 22 - Занимать место в пассажирском вагоне',
+                ' 23 - Занимать объем в грузовом вагоне',
                 BORDERLINE.to_s,
                 'Для выхода из меню введите: exit',
                 BORDERLINE.to_s]
@@ -81,6 +84,12 @@ class AppController
       show_all_routes
     when '20'
       show_wagons_by_train
+    when '21'
+      show_trains_by_station
+    when '22'
+      load_passenger_wagon
+    when '23'
+      load_cargo_wagon
     else
       puts 'Повторите ввод!'
     end
@@ -678,7 +687,6 @@ class AppController
     selected_train = select_train(number)
     selected_train.each_wagon do |wagon|
       puts ''
-      p wagon
       puts "Вместимость: #{wagon.capacity}"
       puts "Тип вагона: #{wagon.type}"
       puts "Free capacity: #{wagon.free_capacity}"
@@ -686,4 +694,40 @@ class AppController
     end
   end
 
+  # #################### 21 - show trains by the station #######################
+  # show trains by the station
+  def show_trains_by_station
+    if @stations.empty?
+      stations_void
+    else
+      request_info = ["Введите имя станции: [#{@stations.keys.join(', ')}]: "]
+      getting_info(request_info, :validate_station_selection, :show_train)
+    end
+  end
+
+  # показать поезда на станции
+  def show_train(name)
+    selected_station = select_station(name)
+    selected_station.each_train do |train|
+      puts ''
+      puts "Вместимость: #{train.number}"
+      puts "Тип вагона: #{train.type}"
+      puts "Скорость: #{train.speed}"
+      puts "Кол-во вагонов: #{train.wagons.size}"
+      # puts "Free capacity: #{train.free_capacity}"
+      puts BORDERLINE.to_s
+    end
+  end
+
+  # #################### 22 - load_passenger_wagon #############################
+  # load_passenger_wagon
+  def load_passenger_wagon
+    # ...
+  end
+
+  # #################### 23 - load_cargo_wagon #################################
+  # load_cargo_wagon
+  def load_cargo_wagon
+    # ...
+  end
 end

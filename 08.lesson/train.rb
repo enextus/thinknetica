@@ -83,7 +83,7 @@ class Train
   end
 
   def each_wagon(&block)
-    wagons.each { |wagon| block.call(wagon) }
+    wagons.each { |wagon| block.call(wagon) if wagon.any?  }
   end
 
   protected
