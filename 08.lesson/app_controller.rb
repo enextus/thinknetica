@@ -33,9 +33,9 @@ class AppController
                 ' 18 - Переместить поезд по маршруту назад',
                 ' 19 - Посмотреть список созданных маршрутов',
                 ' 20 - Выводить список вагонов у поезда',
-                ' 21 - Выводить список поездов на станции',
-                ' 22 - Занимать место в пассажирском вагоне',
-                ' 23 - Занимать объем в грузовом вагоне',
+                ' 21 - Выводить список поездов на станции (&block)',
+                ' 22 - Занять место в пассажирском вагоне',
+                ' 23 - Заполнить объем в грузовом вагоне',
                 BORDERLINE.to_s,
                 'Для выхода из меню введите: exit',
                 BORDERLINE.to_s]
@@ -98,7 +98,7 @@ class AppController
 
   private
 
-  # ввод информации и формирование меню программы
+  # ввод данных и формирование меню программы
   def getting_info(request_info, validator, success_callback)
     response = nil
 
@@ -122,13 +122,11 @@ class AppController
   end
 
   # ###############    0 - вспомогательные методы  ############################
-
   def request_info_station
     ["Ввод название станции [#{@stations.keys.join(', ')}]: "]
   end
 
   # ###############    1 - создание станции  ##################################
-
   # создание станции с валидацией ввода
   def create_station
     request_info = ['Ввод название станции: ']
@@ -155,7 +153,6 @@ class AppController
   end
 
   # ###############    2 + 3 - создание поезда  ################################
-
   def message_create_train
     @message = 'Ввeдите номер поезда в формате > xxx(-?)xx: '
   end
@@ -175,10 +172,7 @@ class AppController
         train = CargoTrain.new(number)
       end
 
-      p train
-
       created_train = @trains[number.to_sym] = train
-
       break
     end
   rescue StandardError => exception
@@ -196,8 +190,7 @@ class AppController
     puts "\nПоезд номер [#{number}] успешно создан!"
   end
 
-  # ###############    4 - 5 создание вагона  ####################################
-
+  # ###############    4 - 5 создание вагона  ##################################
   def message_create_wagon
     @message = 'Ввeдите количество мест или объем вагона: '
   end
@@ -231,7 +224,7 @@ class AppController
     puts "\nВагон типа: «#{type}» создан."
   end
 
-  # ###############  6 - Посмотреть список вагонов в пуле #####################
+  # ###############  6 - Посмотреть список вагонов в пуле ###################ю##
   # список имеющихся вагонов
   def list_wagons
     if @wagons['cargo'].empty? && @wagons['passenger'].empty?
@@ -250,7 +243,6 @@ class AppController
   end
 
   # ###############    7  - Прицепить к поезду вагон из пула вагонов ###########
-
   # проверка добавления вагона к поезду
   def attach_wagon
     if @trains.empty? || @wagons['passenger'].empty? && @wagons['cargo'].empty?
@@ -320,7 +312,6 @@ class AppController
     selected_train = select_train(number)
     wagon = @wagons[selected_train.type].last
     selected_train.add_wagon(wagon)
-          p selected_train
     @wagons[selected_train.type].delete(wagon)
   end
 
@@ -403,7 +394,6 @@ class AppController
   end
 
   # ###############  10 - Посмотреть список станций ############################
-
   # список имеющихся станций
   def list_stations
     if @stations.empty?
@@ -710,11 +700,10 @@ class AppController
     selected_station = select_station(name)
     selected_station.each_train do |train|
       puts ''
-      puts "Вместимость: #{train.number}"
-      puts "Тип вагона: #{train.type}"
-      puts "Скорость: #{train.speed}"
-      puts "Кол-во вагонов: #{train.wagons.size}"
-      # puts "Free capacity: #{train.free_capacity}"
+      puts "Номер поезда: #{train.number}"
+      puts "Тип поезда: #{train.type}"
+      puts "Скорость поезда: #{train.speed}"
+      puts "Кол-во прицепленных вагонов: #{train.wagons.size}"
       puts BORDERLINE.to_s
     end
   end
@@ -722,12 +711,100 @@ class AppController
   # #################### 22 - load_passenger_wagon #############################
   # load_passenger_wagon
   def load_passenger_wagon
-    # ...
+    if @trains.empty? || check_availability_of_passenger_wagons
+      trains_or_trains_with_wagons_void
+    else
+      request_info = ["Введите номер поезда имеющего вагоны: [#{passenger_trains_with_wagons}]: "]
+      getting_info(request_info, :validate_train_for_wagon_load, :book_place_by_train!)
+      place_booked_by_train
+    end
+  end
+
+  # список пассажирских поездов имеющих вагоны
+  def passenger_trains_with_wagons
+    converted = Hash[@trains.map { |key, value| [key.to_sym, value] if value.wagons.any? && value.type == 'passenger'  }]
+    converted.keys.join(', ')
+  end
+
+  # сообщение об ошибке
+  def trains_or_trains_with_wagons_void
+    puts 'Поезда отсутствуют или в них нет вагонов, создайте!'
+  end
+
+  # проверка наличия минимум одного поезда с минимум одним вагоном
+  def check_availability_of_passenger_wagons
+    @trains.each do |train|
+      train.each do |element|
+        if element.class != Symbol
+          return false if element.wagons.any? && element.type == 'passenger'
+        end
+      end
+    end
+  end
+
+  def book_place_by_train!(number)
+    # упрощение - место занимается всегда в первом вагоме поезда
+    @trains[number.to_sym].wagons[0].booking_place_by_wagon
+  end
+
+  def place_booked_by_train
+    puts 'Место в первом вагоне поезда занято.'
   end
 
   # #################### 23 - load_cargo_wagon #################################
   # load_cargo_wagon
   def load_cargo_wagon
-    # ...
+    if @trains.empty? || check_availability_of_cargo_wagons
+      trains_or_trains_with_wagons_void
+    else
+      request_info = ["Введите номер поезда имеющего вагоны: [#{cargo_trains_with_wagons}]: "]
+      @selected_cargo_train = getting_info(request_info, :validate_train_for_wagon_load, :select_train)
+
+      request_info = ["Введите обьем для загрузки в вагон: "]
+      getting_info(request_info, :validate_volume_for_wagon_load, :loading_volume_by_wagons!)
+      volume_loaded_by_train
+    end
+  end
+
+  def validate_train_for_wagon_load(number)
+    if @trains[number.to_sym]
+      { success: true }
+    else
+      { success: false, 'errors': 'Поезда с таким номером нет!' }
+    end
+  end
+
+  def loading_volume_by_wagons!(amount)
+    # упрощение - место занимается всегда в первом вагоме поезда
+    @selected_cargo_train.wagons[0].loading_volume_by_wagon(amount.to_i)
+  end
+
+  # список грузовых поездов имеющих вагоны
+  def cargo_trains_with_wagons
+    converted = Hash[@trains.map { |key, value| [key.to_sym, value] if value.wagons.any? && value.type == 'cargo' }]
+    converted.keys.join(', ')
+  end
+
+  # проверка правильности возможно обьема
+  def validate_volume_for_wagon_load(amount)
+    amount = amount.to_i
+    errors = []
+    errors << 'Невозможный обьем!' if amount.negative? || amount.zero?
+    errors.empty? ? {success: true} : {success: false, 'errors': errors}
+  end
+
+  # проверка наличия минимум одного поезда с минимум одним вагоном
+  def check_availability_of_cargo_wagons
+    @trains.each do |train|
+      train.each do |element|
+        if element.class != Symbol
+          return false if element.wagons.any? && element.type == 'cargo'
+        end
+      end
+    end
+  end
+
+  def volume_loaded_by_train
+    puts 'Объем в первом вагоне поезда загружен.'
   end
 end

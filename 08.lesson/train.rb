@@ -83,7 +83,15 @@ class Train
   end
 
   def each_wagon(&block)
-    wagons.each { |wagon| block.call(wagon) if wagon.any?  }
+    if wagons.any?
+      wagons.each { |wagon| block.call(wagon) }
+    else
+      any_wagons_void
+    end
+  end
+
+  def any_wagons_void
+    puts 'К поезду вагоны не прицеплены!'
   end
 
   protected

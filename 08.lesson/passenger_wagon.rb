@@ -7,7 +7,7 @@ class PassengerWagon < Wagon
     super(capacity, 'passenger')
   end
 
-  def booking_single_place
+  def booking_place_by_wagon
     return if @free_capacity.zero?
     @free_capacity -= 1
   end
