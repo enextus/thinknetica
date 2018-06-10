@@ -24,7 +24,7 @@ class Route
   end
 
   def all_stations
-    @stations.each { |station| station.name }
+    @stations.each(&:name)
   end
 
   def first_station
@@ -38,8 +38,8 @@ class Route
   protected
 
   def validate!
-    raise 'Количество станций не может быть меньше двух!' if @stations.size != 2
-    @stations.each { |element| raise 'Маршрут может состоять только из станций!' unless element.is_a? Station }
-    raise 'Начальная и конечная станции должны различаться!' if @stations[0].object_id == @stations[1].object_id
+    raise 'Stations can not be less than two!' if @stations.size != 2
+    @stations.each { |item| raise 'Only stations!' unless item.is_a? Station }
+    raise 'Depart != arrive' if @stations[0].object_id == @stations[1].object_id
   end
 end

@@ -40,35 +40,35 @@ class Train
 
   def assign_route(route)
     @route = route
-    @index = 0
+    @position = 0
     current_station.arrive(self)
   end
 
   def previous_station
-    return if @index.zero?
-    @route.stations[@index - 1]
+    return if @position.zero?
+    @route.stations[@position - 1]
   end
 
   def current_station
-    @route.stations[@index]
+    @route.stations[@position]
   end
 
   def next_station
-    return if @index >= @route.stations.size - 1
-    @route.stations[@index + 1]
+    return if @position >= @route.stations.size - 1
+    @route.stations[@position + 1]
   end
 
   def move_train_forward
-    return if @route.stations.nil? || @index >= @route.stations.size - 1
+    return if @route.stations.nil? || @position >= @route.stations.size - 1
     current_station.depart(self)
-    @index += 1
+    @position += 1
     current_station.arrive(self)
   end
 
   def move_train_backward
-    return if @route.stations.nil? || @index.zero?
+    return if @route.nil? || @position.zero?
     current_station.depart(self)
-    @index -= 1
+    @position -= 1
     current_station.arrive(self)
   end
 
@@ -97,9 +97,7 @@ class Train
   protected
 
   def validate!
-    # type = %w[passenger cargo]
-    # raise 'Несуществующий тип поезда' unless type.include? @type
-    raise 'Номер не может быть пустым, повторите ввод!' if @number.nil? || @number.empty?
-    raise 'Неверный формат номера, повторите ввод!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
+    raise 'Номер не может быть пустым!' if @number.nil? || @number.empty?
+    raise 'Неверный формат номера!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
   end
 end
