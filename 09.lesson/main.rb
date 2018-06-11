@@ -16,7 +16,7 @@ require_relative 'app_controller.rb'
 
 app_controller = AppController.new
 
-puts "Добро пожаловать в программу 'Железная дорога'."
+puts "Here is the railways software."
 
 loop do
   app_controller.show_actions

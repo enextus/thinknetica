@@ -91,13 +91,13 @@ class Train
   end
 
   def any_wagons_void
-    puts 'К поезду вагоны не прицеплены!'
+    puts 'The wagons are not attached!'
   end
 
   protected
 
   def validate!
-    raise 'Номер не может быть пустым!' if @number.nil? || @number.empty?
-    raise 'Неверный формат номера!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
+    raise 'The number can not be empty!' if @number.nil? || @number.empty?
+    raise 'Invalid number format!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
   end
 end

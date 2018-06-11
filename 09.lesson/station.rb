@@ -41,6 +41,6 @@ class Station
   protected
 
   def validate!
-    raise 'Название не может быть пустым' if @name.nil? || @name.empty?
+    raise 'Station name can not be void' if @name.nil? || @name.empty?
   end
 end

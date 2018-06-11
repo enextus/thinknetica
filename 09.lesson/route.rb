@@ -6,10 +6,10 @@ class Route
   include Validation
   attr_reader :stations, :name
 
-  def initialize(first_station, last_station)
-    @stations = [first_station, last_station]
+  def initialize(depart, arrive)
+    @stations = [depart, arrive]
     validate!
-    @name = "#{first_station.name}-#{last_station.name}"
+    @name = "#{depart.name}-#{arrive.name}"
     register_instance
   end
 
@@ -27,11 +27,11 @@ class Route
     @stations.each(&:name)
   end
 
-  def first_station
+  def depart
     @stations.first
   end
 
-  def last_station
+  def arrive
     @stations.last
   end
 

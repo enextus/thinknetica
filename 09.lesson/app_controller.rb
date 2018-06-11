@@ -32,10 +32,10 @@ class AppController
                 ' 17 - Move the train along the route forward',
                 ' 18 - Move the train along the route back',
                 ' 19 - View the list of created routes',
-                ' 20 - See the list of cars at the train',
+                ' 20 - See the list of wagons at the train',
                 ' 21 - Display the list of trains at the station (&block)',
                 ' 22 - Book a place in the passenger wagon',
-                ' 23 - Load the volume in the freight car',
+                ' 23 - Load the volume in the cargo wagon',
                 BORDERLINE.to_s,
                 'To exit the menu, type: exit',
                 BORDERLINE.to_s]
@@ -91,7 +91,7 @@ class AppController
     when '23'
       load_cargo_wagon
     else
-      puts 'Повторите ввод!'
+      puts 'Re-enter!'
     end
     puts BORDERLINE
   end
@@ -302,7 +302,7 @@ class AppController
     @wagons[@trains[number.to_sym].type].any?
   end
 
-  # add the car to the train
+  # add the wagon to the train
   def attach_wagon!(number)
     selected_train = select_train(number)
     wagon = @wagons[selected_train.type].last
@@ -327,7 +327,7 @@ class AppController
   end
 
   def wagon_detached
-    puts "\nThe car was successfully detach from the train."
+    puts "\nThe wagon was successfully detach from the train."
   end
 
   # check the correctness of the number of the train
@@ -476,7 +476,7 @@ class AppController
   end
 
   def route_created(name)
-    puts "Маршрут «#{name}» создан."
+    puts "Route «#{name}» was created."
   end
 
   # ############### 13 - Add a station to the route ###########################
@@ -537,6 +537,7 @@ class AppController
   end
 
   def all_stations(route)
+    # all_stations = route.stations.map { |station| station.name }.join(', ')
     route.stations.map(&:name).join(', ')
   end
 
@@ -627,12 +628,11 @@ class AppController
       routes_void
     else
       routes_list
-      @routes.each { |route| puts route.inspect }
     end
   end
 
   def routes_list
-    puts "There are following routes: [#{@routes.keys.join(', ')}]: "
+    puts "There are following routes: [#{@routes.keys.join(', ')}]"
   end
 
   # #################### 20 - show wagons by the train ########################
@@ -712,7 +712,7 @@ class AppController
     puts 'There are no trains or there are no wagons in them, please create!'
   end
 
-  # check the presence of at least one train with at least one car
+  # check the presence of at least one train with at least one wagon
   def check_availability_of_passenger_wagons
     @trains.each do |train|
       train.each do |element|
@@ -740,7 +740,7 @@ class AppController
     else
       request = ["Enter the trains number: [#{cargo_trains_with_wagons}]: "]
       @select_cargo_train = getting(request, :approve_wagon, :select_train)
-      request = ['Enter the amount to load into the car: ']
+      request = ['Enter the amount to load into the wagon: ']
       volume_loaded if getting(request, :approve_volume, :loading_wagon_volume!)
     end
   end
@@ -775,7 +775,7 @@ class AppController
     errors.empty? ? { success: true } : { success: false, 'errors': errors }
   end
 
-  # checking the presence of at least one train with at least one car
+  # checking the presence of at least one train with at least one wagon
   def check_availability_of_cargo_wagons
     @trains.each do |train|
       train.each do |element|
@@ -787,6 +787,6 @@ class AppController
   end
 
   def volume_loaded
-    puts 'The volume in the first train car is loaded.'
+    puts 'The volume in the first train wagon was loaded.'
   end
 end

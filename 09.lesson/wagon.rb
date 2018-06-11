@@ -21,6 +21,6 @@ class Wagon
   protected
 
   def validate!
-    raise 'Неверный формат, повторите ввод!' unless @capacity.positive?
+    raise 'Invalid format, please try again!' unless @capacity.positive?
   end
 end
