@@ -2,11 +2,9 @@
 
 # module Accessors
 module Accessors
-  
   @@history = {}
 
   def attr_accessor_with_history(*names)
-
     names.each do |name|
       var_name = "@#{name}".to_sym
       define_method(name) { instance_variable_get(var_name) }
@@ -20,15 +18,12 @@ module Accessors
     end
   end
 
-  def strong_attr_accessor(a_name, a_class)
-
-    var_name = "@#{a_name}".to_sym
-    define_method(a_name) { instance_variable_get(var_name) }
-
-    # validate!
-
-    define_method("#{a_name}=".to_sym) do |value|
-      instance_variable_set(var_name, value)
+  def strong_attr_accessor(name, type)
+    var_name = "@#{name}".to_sym
+    define_method(name.to_sym) { instance_variable_get(var_name) }
+    define_method("#{name}=".to_sym) do |value|
+      instance_variable_set(var_name, value) if value.class == type
+      raise TypeError, 'Wrong type argument!' if value.class != type
     end
   end
 end
