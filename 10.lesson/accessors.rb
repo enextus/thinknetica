@@ -6,15 +6,15 @@ module Accessors
     names.each do |name|
       var_name = "@#{name}".to_sym
       var_name_history = "@#{name}_history".to_sym
+      history = []
 
       define_method(name.to_sym) { instance_variable_get(var_name) }
       define_method("#{name}_history".to_sym) { instance_variable_get(var_name_history) }
 
       define_method("#{name}=".to_sym) do |value|
         instance_variable_set(var_name, value)
-        history = instance_variable_get(var_name_history)
-        history.nil? ? history = [value] : history << value
-        instance_variable_set(var_name_history, history)
+        history << value
+        instance_variable_set(var_name_history, history.take(history.length - 1))
       end
     end
   end
