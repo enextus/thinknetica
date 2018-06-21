@@ -14,7 +14,7 @@ module Accessors
       define_method("#{name}=".to_sym) do |value|
         instance_variable_set(var_name, value)
         history << value
-        instance_variable_set(var_name_history, history.take(history.length - 1))
+        instance_variable_set(var_name_history, history.take(history.size - 1))
       end
     end
   end
