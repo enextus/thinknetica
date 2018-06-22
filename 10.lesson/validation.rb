@@ -41,6 +41,10 @@ module Validation
       raise "'#{name}' have wrong format '#{params[1]}'" if value !~ params[0]
     end
 
+    def validate_range(name, value, params)
+      raise "Out of '#{name}', please try again!" if value.negative?
+    end
+
     def validate!
       self.class.checks.each do |key, checks|
         value = instance_variable_get("@#{key}".to_sym)

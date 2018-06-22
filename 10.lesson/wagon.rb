@@ -17,10 +17,4 @@ class Wagon
   def loaded_capacity
     @capacity - @free_capacity
   end
-
-  protected
-
-  def validate!
-    raise 'Invalid format, please try again!' unless @capacity.positive?
-  end
 end

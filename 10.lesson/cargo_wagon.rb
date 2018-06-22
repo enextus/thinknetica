@@ -1,8 +1,11 @@
-
 # frozen_string_literal: true
 
 # class CargoWagon
 class CargoWagon < Wagon
+  validate :capacity, :presence
+  validate :capacity, :type, Integer
+  validate :capacity, :range
+
   def initialize(capacity)
     super(capacity, 'cargo')
   end

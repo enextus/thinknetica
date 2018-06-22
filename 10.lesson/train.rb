@@ -14,11 +14,6 @@ class Train
 
   attr_reader :number, :type, :speed, :wagons, :route
 
-  validate :name, :type, String
-  validate :number, :type, String
-  validate :name, :presence
-  validate :number, :format, /^[a-z\d]{3}-?[a-z\d]{2}$/i, 'XXX-XX or XXXXX'
-
   def initialize(number, type)
     @number = number
     @type = type
@@ -98,11 +93,4 @@ class Train
   def any_wagons_void
     puts 'The wagons are not attached!'
   end
-
-  # protected
-
-  # def validate!
-    # raise 'The number can not be empty!' if @number.nil? || @number.empty?
-    # raise 'Invalid number format!' if @number !~ /^[a-z\d]{3}-?[a-z\d]{2}$/i
-  # end
 end

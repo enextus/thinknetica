@@ -5,6 +5,9 @@ class Station
   include InstanceCounter
   include Validation
 
+  validate :name, :presence
+  validate :name, :type, String
+
   @@all_stations = []
 
   def self.all
@@ -36,11 +39,5 @@ class Station
 
   def each_train(&block)
     trains.each { |train| block.call(train) }
-  end
-
-  protected
-
-  def validate!
-    raise 'Station name can not be void' if @name.nil? || @name.empty?
   end
 end
