@@ -8,9 +8,8 @@ class TestValidate
   attr_accessor_with_history :name, :number
 
   validate :name, :type, String
-  validate :number, :type, String
   validate :name, :presence
-  validate :number, :format, /^[a-z\d]{3}-?[a-z\d]{2}$/i, "XXX-XX or XXXXX"
+  validate :number, :format, /^[a-z\d]{3}-?[a-z\d]{2}$/i, 'XXX-XX or XXXXX'
 
   def initialize(name, number)
     @name = name

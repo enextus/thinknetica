@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'accessors.rb'
+require_relative 'accessors'
 
 # class Test
 class Test
