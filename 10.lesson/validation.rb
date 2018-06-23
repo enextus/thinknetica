@@ -43,15 +43,15 @@ module Validation
 
     def validate_range(name, value, _params)
       value = value.to_i
-      raise "Please enter a digital value!" if value.zero?
+      raise "'#{name}' is not a ditig! Please enter a digital value!" if value.zero?
       raise "Out of '#{name}', please try again!" if value.negative?
     end
 
     def validate!
-      self.class.checks.each do |key, checks|
-        value = instance_variable_get("@#{key}".to_sym)
+      self.class.checks.each do |attr_name, checks|
+        value = instance_variable_get("@#{attr_name}".to_sym)
         checks.each do |check|
-          send("validate_#{check[:kind]}", key, value, check[:params])
+          send("validate_#{check[:kind]}", attr_name, value, check[:params])
         end
       end
     end
