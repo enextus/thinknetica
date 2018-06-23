@@ -33,7 +33,7 @@ module Validation
       raise "'#{name}'.class is not '#{params.first}'" if value.class != params.first
     end
 
-    def validate_presence(name, value, params)
+    def validate_presence(name, value, _params)
       raise "'#{name}' is nil or empty!" if value.nil? || value == ''
     end
 
@@ -41,7 +41,7 @@ module Validation
       raise "'#{name}' have wrong format '#{params[1]}'" if value !~ params[0]
     end
 
-    def validate_range(name, value, params)
+    def validate_range(name, value, _params)
       raise "Out of '#{name}', please try again!" if value.negative?
     end
 
@@ -52,7 +52,6 @@ module Validation
           send("validate_#{check[:kind]}", key, value, check[:params])
         end
       end
-      true
     end
   end
 end
