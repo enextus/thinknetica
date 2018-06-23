@@ -141,7 +141,6 @@ class AppController
     errors.empty? ? { success: true } : { success: false, 'errors': errors }
   end
 
-  # record the created station in hash stations
   def create_station!(name)
     station = Station.new(name)
     @stations[name.to_sym] = station
@@ -200,7 +199,7 @@ class AppController
     message_create_wagon
     loop do
       print @message
-      capacity = gets.to_i
+      capacity = gets.chomp
 
       case type
       when 'passenger'

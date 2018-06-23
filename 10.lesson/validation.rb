@@ -29,12 +29,12 @@ module Validation
 
     private
 
-    def validate_type(name, value, params)
-      raise "'#{name}'.class is not '#{params.first}'" if value.class != params.first
-    end
-
     def validate_presence(name, value, _params)
       raise "'#{name}' is nil or empty!" if value.nil? || value == ''
+    end
+
+    def validate_type(name, value, params)
+      raise "'#{name}'.class is not '#{params.first}'" if value.class != params.first
     end
 
     def validate_format(name, value, params)
@@ -42,6 +42,8 @@ module Validation
     end
 
     def validate_range(name, value, _params)
+      value = value.to_i
+      raise "Please enter a digital value!" if value.zero?
       raise "Out of '#{name}', please try again!" if value.negative?
     end
 

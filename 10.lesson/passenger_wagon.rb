@@ -4,7 +4,6 @@
 # class CargoWagon
 class PassengerWagon < Wagon
   validate :capacity, :presence
-  validate :capacity, :type, Integer
   validate :capacity, :range
 
   def initialize(capacity)
