@@ -122,33 +122,38 @@ class AppController
   end
 
   # ###############    0 - some methods #######################################
+
   def request_station
     ["Enter station name [#{@stations.keys.join(', ')}]: "]
   end
 
   # ###############    1 - creation of a station  #############################
-  # creation of a station
+  def message_create_station
+    @message = 'Enter the station name: '
+  end
+
+  # creating station
   def create_station
-    request = ['Enter station name: ']
-    getting(request, :approve_station, :create_station!)
+    message_create_station
+    station = nil
+    loop do
+      print @message
+      name = gets.chomp
+
+      station = Station.new(name)
+
+      @stations[name.to_sym] = station
+      break
+    end
+  rescue StandardError => exception
+    error_message(exception)
+    retry
+  else
+    message_station_created(station.name)
   end
 
-  # checking the name of the station
-  def approve_station(name)
-    errors = []
-    errors << 'The name can not be empty. Re-enter.' if name.empty?
-    errors << 'Station with this name already exists' if @stations[name.to_sym]
-    errors.empty? ? { success: true } : { success: false, 'errors': errors }
-  end
-
-  def create_station!(name)
-    station = Station.new(name)
-    @stations[name.to_sym] = station
-    station_created(station.name)
-  end
-
-  def station_created(name)
-    puts "\nStation «#{name}» created."
+  def message_station_created(name)
+    puts "\nStation with the name: «#{name}» was successfully created!"
   end
 
   # ##################### 2 + 3 - creating train ##############################

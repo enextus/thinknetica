@@ -34,7 +34,7 @@ module Validation
     end
 
     def validate_type(name, value, params)
-      raise "'#{name}'.class is not '#{params.first}'" if value.class != params.first
+      raise "'#{name}' is't '#{params.first}'" if value.class != params.first
     end
 
     def validate_format(name, value, params)
@@ -43,8 +43,18 @@ module Validation
 
     def validate_range(name, value, _params)
       value = value.to_i
-      raise "'#{name}' is not a ditig! Please enter a digital value!" if value.zero?
+      raise "'#{name}' is not a ditig! Re-enter a digital value!" if value.zero?
       raise "Out of '#{name}', please try again!" if value.negative?
+    end
+
+    def validate_doubling(name, value, _params)
+      # puts "self.class.class_variables = #{self.class.class_variables}"
+      # puts "1. self.class.all = #{self.class.all}"
+      # puts "2. #{self.class.class_variable_get(:@@all_stations)}"
+
+      self.class.class_variable_get(:@@all_stations).each do |station|
+        raise "'#{name}' is already exists! Re-enter." if value == station.name
+      end
     end
 
     def validate!

@@ -16,7 +16,7 @@ require_relative 'app_controller'
 
 app_controller = AppController.new
 
-puts "Here is the railways software."
+puts 'Here is the railways software.'
 
 loop do
   app_controller.show_actions

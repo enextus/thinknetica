@@ -6,7 +6,8 @@ class Station
   include Validation
 
   validate :name, :presence
-  validate :name, :type, String
+  validate :name, :format, /^[a-z\d]+$/i, '^[a-z\d]+$...'
+  validate :name, :doubling
 
   @@all_stations = []
 
