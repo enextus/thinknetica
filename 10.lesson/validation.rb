@@ -48,10 +48,6 @@ module Validation
     end
 
     def validate_doubling(name, value, _params)
-      # puts "self.class.class_variables = #{self.class.class_variables}"
-      # puts "1. self.class.all = #{self.class.all}"
-      # puts "2. #{self.class.class_variable_get(:@@all_stations)}"
-
       self.class.class_variable_get(:@@all_stations).each do |station|
         raise "'#{name}' is already exists! Re-enter." if value == station.name
       end

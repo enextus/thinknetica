@@ -6,6 +6,6 @@ require_relative 'accessors'
 class Test
   extend Accessors
 
-  attr_accessor_with_history :a, :b, :c
+  attr_accessor_with_history :a, :b
   strong_attr_accessor :d, String
 end
