@@ -18,6 +18,9 @@ class AppController
                 '  3 - Create a cargo train',
                 '  4 - Create a passenger wagon',
                 '  5 - Create a cargo wagon',
+                '501 - Show an actual color of cargo wagons',
+                '502 - Set an actual color of cargo wagons',
+                '503 - Show complete colors history',
                 '  6 - View the list of wagons created in the pool',
                 '  7 - Attach to the train wagon from the pool',
                 '  8 - Detach the wagon from the train to the pool',
@@ -54,6 +57,12 @@ class AppController
       create_wagon('passenger')
     when '5'
       create_wagon('cargo')
+    when '501'
+      show_actual_color
+    when '502'
+      setting_new_color
+    when '503'
+      show_colors_history
     when '6'
       list_wagons
     when '7'
@@ -226,6 +235,83 @@ class AppController
 
   def message_wagon_created(type)
     puts "\nWagon of type: «#{type}» was created."
+  end
+
+
+  # ###############    501 show actual color of cargo wagons   ################
+  def show_actual_color
+    if @wagons['cargo'].empty?
+      wagons_void
+    else
+      show_wagons_color
+    end
+  end
+
+  def show_wagons_color
+    @wagons.map do |type, wagons|
+      [type, wagons.each do |wagon|
+        if wagon.color.nil?
+          puts 'Color is not yet selected!'
+        else
+          puts "Color was set to: '#{wagon.color}'"
+        end
+      end]
+    end
+  end
+
+  # ###############    502 set actual color of cargo wagons   ################
+  def setting_new_color
+    if @wagons['cargo'].empty?
+      wagons_void
+    else
+      setting_new_color!
+    end
+  end
+
+  def message_choice_color
+    @message = 'Enter the color of wagons: red, black or white: '
+  end
+
+  # wagon creating
+  def setting_new_color!
+    message_choice_color
+    loop do
+      print @message
+      color = gets.chomp
+
+      @wagons.map do |type, wagons|
+        [type, wagons.each do |wagon|
+          wagon.color = color
+        end]
+      end
+      break
+    end
+  end
+
+  def message_color_was_setted(color)
+    puts "\nColor of wagons was setted to: '#{color}'."
+  end
+
+  # ###############    503 show complete colors history  ##########################
+
+  def show_colors_history
+    if @wagons['cargo'].empty?
+      wagons_void
+    else
+      show_complete_colors_history
+    end
+  end
+
+  def show_complete_colors_history
+    @wagons.map do |type, wagons|
+      [type, wagons.each do |wagon|
+        if wagon.color_history.nil?
+          puts 'The color history is not yet exist!'
+        else
+          puts "The complete color history looks like this:: '#{wagon.color_history}'"
+        end
+      end]
+    end
   end
 
   # ###############  6 - View the list of wagons in the pool ##################

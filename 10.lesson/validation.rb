@@ -54,10 +54,10 @@ module Validation
     end
 
     def validate!
-      self.class.checks.each do |attr_name, checks|
+      self.class.checks.each do |attr_name, attr_validations|
         value = instance_variable_get("@#{attr_name}".to_sym)
-        checks.each do |check|
-          send("validate_#{check[:kind]}", attr_name, value, check[:params])
+        attr_validations.each do |attributes|
+          send("validate_#{attributes[:kind]}", attr_name, value, attributes[:params])
         end
       end
     end

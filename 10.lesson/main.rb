@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 BORDERLINE = '_' * 50
+require_relative 'accessors'
 require_relative 'validation'
 require_relative 'instance_counter'
 require_relative 'company_name'
