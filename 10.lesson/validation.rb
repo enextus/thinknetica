@@ -9,7 +9,7 @@ module Validation
 
   # module ClassMethods
   module ClassMethods
-    attr_accessor :checks
+    attr_reader :checks
 
     def validate(attr, kind, *params)
       @checks ||= {}

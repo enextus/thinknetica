@@ -259,8 +259,8 @@ class AppController
     end
   end
 
-  # ###############    502 set actual color of cargo wagons   ################
-  def setting_new_color
+  # ###############    _502 set actual color of cargo wagons   ################
+  def _setting_new_color
     if @wagons['cargo'].empty?
       wagons_void
     else
@@ -268,12 +268,12 @@ class AppController
     end
   end
 
-  def message_choice_color
+  def _message_choice_color
     @message = 'Enter the color of wagons: red, black or white: '
   end
 
   # wagon creating
-  def setting_new_color!
+  def _setting_new_color!
     message_choice_color
     loop do
       print @message
@@ -288,8 +288,37 @@ class AppController
     end
   end
 
-  def message_color_was_setted(color)
-    puts "\nColor of wagons was setted to: '#{color}'."
+  # ###############    502 - set actual color of cargo wagon   ################
+  # checking the possibility of colorizing of wagons
+  def setting_new_color
+    @color = %w( red grey black white )
+    if @wagons['cargo'].empty?
+      wagons_void
+    else
+      request = ["Choice color that you want to apply: [#{@color.join(', ')}] "]
+      getting(request, :approve_color_selection, :colorize_the_wagons!)
+      message_color_was_setted
+    end
+  end
+
+  # check entered color
+  def approve_color_selection(color_name)
+    errors = []
+    errors << 'Wrong color name! Re-enter.' unless @color.include?(color_name)
+    errors.empty? ? { success: true } : { success: false, 'errors': errors }
+  end
+
+  # colorize the wagons
+  def colorize_the_wagons!(color_name)
+    @wagons.map do |type, wagons|
+      [type, wagons.each do |wagon|
+        wagon.color = color_name
+      end]
+    end
+  end
+
+  def message_color_was_setted
+    puts "\nColor of wagons was setted!"
   end
 
   # ###############    503 show complete colors history  ##########################
@@ -358,7 +387,7 @@ class AppController
     puts "\nThe wagon is attached to the train."
   end
 
-  # check the availability of awagon of the appropriate type to the train
+  # check the availability of a wagon of the appropriate type to the train
   def check_train_wagons
     passenger_trains_amount = 0
     cargo_amount = 0
