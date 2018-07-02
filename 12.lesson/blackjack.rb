@@ -12,6 +12,12 @@ CARDS = (2..10).to_a << :ace
 # The order is given in a what might be considered worst to best order.
 POSSIBLE_RESULTS = [:bust] + (17..21).to_a + [:natural]
 
+
+
+
+
+
+
 # CLASSES
 class Shoe
   # A deck is a hash keyed by the card, and the value is how many of
@@ -58,6 +64,14 @@ class Shoe
     @card_count += 1
   end
 end
+
+
+
+
+
+
+
+
 
 # SET UP VARIABLES
 # The shoe is a Hash that contains one or more decks and an embedded
