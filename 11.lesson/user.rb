@@ -10,7 +10,7 @@ class User
   @@all_users = []
 
   def self.all
-    @@all_stations
+    @@all_users
   end
 
   attr_reader :name
@@ -19,9 +19,7 @@ class User
     @name = name
     validate!
     @@all_users << self
-    register_instance
   end
 
   # methods
-
 end

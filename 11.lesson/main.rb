@@ -4,6 +4,7 @@ BORDERLINE = '_' * 50
 require_relative 'accessors'
 require_relative 'validation'
 require_relative 'user'
+require_relative 'app_controller'
 
 app_controller = AppController.new
 

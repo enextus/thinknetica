@@ -31,13 +31,13 @@ class AppController
 
   # ###############    1 - creation of a user  #############################
   def message_create_user
-    @message = 'Enter the user name: '
+    @message = 'Enter the user name in this format [a-z\d]+: '
   end
 
   # creating user
   def create_user
-    message_create_station
-    station = nil
+    message_create_user
+    user = nil
     loop do
       print @message
       name = gets.chomp
@@ -54,6 +54,11 @@ class AppController
     message_user_created(user.name)
   end
 
+  def error_message(exception)
+    puts exception.message
+  end
+
   def message_user_created(name)
     puts "\nUser with the name: «#{name}» was successfully created!"
   end
+end
