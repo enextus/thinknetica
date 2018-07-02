@@ -30,14 +30,28 @@ class AppController
   private
 
   # ###############    1 - creation of a user  #############################
+
+  def create_user
+    if @users.keys.any?
+      user_exists
+    else
+      create_user!
+    end
+  end
+
+  def user_exists
+    puts "User '#{@users.values[0].name}' already exist. Only one user allowed!"
+  end
+
   def message_create_user
     @message = 'Enter the user name in this format [a-z\d]+: '
   end
 
   # creating user
-  def create_user
+  def create_user!
     message_create_user
     user = nil
+
     loop do
       print @message
       name = gets.chomp

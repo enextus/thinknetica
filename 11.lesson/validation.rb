@@ -47,12 +47,6 @@ module Validation
       raise "Out of '#{name}', please try again!" if value.negative?
     end
 
-    def validate_doubling(name, value, _params)
-      self.class.class_variable_get(:@@all_stations).each do |station|
-        raise "'#{name}' is already exists! Re-enter." if value == station.name
-      end
-    end
-
     def validate!
       self.class.checks.each do |attr_name, attr_validations|
         value = instance_variable_get("@#{attr_name}".to_sym)
