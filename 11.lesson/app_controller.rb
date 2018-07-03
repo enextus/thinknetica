@@ -26,7 +26,7 @@ class AppController
   def action(choice)
     case choice
     when '1'
-      create_user_and_diller
+      create_users
     when '2'
       show_user_properties
     when '3'
@@ -45,9 +45,9 @@ class AppController
 
   # #######################  1 - user create & diller  ########################
 
-  def create_user_and_diller
+  def create_users
     if @user.nil?
-      create_user_and_diller!
+      create_users!
     else
       user_exists
     end
@@ -62,7 +62,7 @@ class AppController
   end
 
   # creating user
-  def create_user_and_diller!
+  def create_users!
     message_create_user
     user = nil
 
@@ -75,6 +75,7 @@ class AppController
 
       @user = user
       @diller = diller
+
       break
     end
   rescue StandardError => exception
@@ -89,7 +90,7 @@ class AppController
   end
 
   def message_user_created(name)
-    puts "\nUser with the name: «#{name}» and «diller» were successfully created!"
+    puts "\nUser with the name: «#{name}» & «diller» were successfully created!"
   end
 end
 
@@ -110,7 +111,9 @@ end
 def show_user_properties!
   puts "User name: #{@user.name}"
   puts "User bank amount: $ #{@user.bank}"
-  puts "User cards: #{@user.cards}"
+  puts 'User cards:'
+  puts LINE
+  @cards.puts_cards_symbols(@user.cards)
 end
 
 # ##################  3 - show diller properties  #############################
@@ -130,10 +133,42 @@ end
 def show_diller_properties!
   puts "Diller name: #{@diller.name}"
   puts "Diller bank amount: $ #{@diller.bank}"
-  puts "Diller cards: #{@diller.cards}"
+  puts 'Diller cards:'
+  puts LINE
+  @cards.puts_cards_symbols(@diller.cards)
 end
 
-# ######################   cards  ################################
+# ###########################  4 -  cards  ####################################
 def show_all_cards
   @cards.show_all_cards
+end
+
+# ##########################   7 - run game ###################################
+
+def start_game
+  if @user.nil?
+    user_void
+  else
+    start_game!
+  end
+end
+
+def start_game!
+  user_getting_cards
+  diller_getting_cards
+  # ...
+end
+
+def user_getting_cards
+  p getting_cards.class
+  p getting_cards
+  @user.cards = getting_cards
+end
+
+def diller_getting_cards
+  @diller.cards = getting_cards
+end
+
+def getting_cards
+  @cards.random_cards
 end

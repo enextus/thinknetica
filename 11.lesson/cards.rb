@@ -24,17 +24,19 @@ class Cards
   end
 
   def show_all_cards
-    puts BORDERWAVE
-    puts_line(@spades)
-    puts_line(@hearts)
-    puts_line(@diamonds)
-    puts_line(@clubs)
+    # puts BORDERWAVE
+    puts_cards_symbols(@spades)
+    puts_cards_symbols(@hearts)
+    puts_cards_symbols(@diamonds)
+    puts_cards_symbols(@clubs)
   end
 
-  def puts_line(line)
+  def puts_cards_symbols(line)
     line.each { |card| print [card.hex].pack('U*') + ', ' }
-    puts "\n"
-    puts BORDERWAVE
+    new_line
   end
 
+  def new_line
+    puts "\n \n"
+  end
 end

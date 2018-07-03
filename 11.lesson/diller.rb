@@ -3,7 +3,8 @@
 # class User
 class Diller
 
-  attr_reader :name, :bank, :cards
+  attr_reader :name, :bank
+  attr_accessor :cards
 
   def initialize(name = 'Diller')
     @name = name

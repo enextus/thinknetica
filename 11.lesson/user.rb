@@ -7,7 +7,8 @@ class User
   validate :name, :presence
   validate :name, :format, /^[a-z\d]+$/i, '^[a-z\d]+$...'
 
-  attr_reader :name, :bank, :cards
+  attr_reader :name, :bank
+  attr_accessor :cards
 
   def initialize(name)
     @name = name
