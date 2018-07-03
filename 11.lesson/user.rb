@@ -7,18 +7,13 @@ class User
   validate :name, :presence
   validate :name, :format, /^[a-z\d]+$/i, '^[a-z\d]+$...'
 
-  @@all_users = []
-
-  def self.all
-    @@all_users
-  end
-
-  attr_reader :name
+  attr_reader :name, :bank, :cards
 
   def initialize(name)
     @name = name
     validate!
-    @@all_users << self
+    @bank = 100
+    @cards = []
   end
 
   # methods
