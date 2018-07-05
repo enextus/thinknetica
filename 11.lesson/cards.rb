@@ -2,6 +2,8 @@
 
 # module Cards
 class Cards
+  attr_reader :score_weight
+
   def initialize
     @deck_count = 2 # user get 2 cards
     @spades =   %w[1F0A1 1F0A2 1F0A3 1F0A4 1F0A5 1F0A6 1F0A7 1F0A8 1F0A9 1F0AA 1F0AB 1F0AD 1F0AE]
@@ -21,7 +23,13 @@ class Cards
   end
 
   def random_cards
-    @random_cards = full_deck.sample(@deck_count).each { |card| print [card.hex].pack('U*')  + ', ' }
+    @random_cards = full_deck.sample(@deck_count)
+  end
+
+  def random_cards_print
+    @random_cards = full_deck.sample(@deck_count).each do |card|
+      print [card.hex].pack('U*') + ', '
+    end
   end
 
   def show_all_cards
@@ -36,17 +44,19 @@ class Cards
     new_line
   end
 
+  def puts_card_symbol(card)
+    print [card.hex].pack('U*') + ', '
+  end
+
   def score_calculate(cards)
-    puts LINE
-    puts "cards = #{cards}"
-
-    # cards = ["1F0AA", "1F0C7"]
-
+    puts 'User cards:'
+    new_half_line
+    puts_cards_symbols(cards)
     cards.each do |card|
-      puts card
+      puts LINE
+      puts "card = #{card}"
 
       string = card[4..4]
-      puts "string = #{string}"
 
       if string.match? /^[a-z]+$/i
         @score_weight += 10
@@ -55,20 +65,23 @@ class Cards
         when 2..10
           @score_weight += string.to_i
         when 1
-          @score_weight += 11
+          if (21 - (@score_weight + 1)) < (21 - (@score_weight + 11)) && (@score_weight + 11 <  21)
+            @score_weight += 1
+          else
+            @score_weight += 11
+          end
         end
       end
-
-      puts "@score_weight = #{@score_weight}"
+      puts "actual score_weight = #{@score_weight}"
     end
-
-  #  Сумма считается так: от 2 до 10 - по номиналу карты,
-  #   все «картинки» - по 10,
-  #    туз - 1 или 11, в зависимости от того, какое значение будет ближе к 21 и что не ведет к проигрышу (сумме более 21).
   end
 
   def new_line
     puts "\n \n"
+  end
+
+  def new_half_line
+    puts "\n"
   end
 
   def do_line

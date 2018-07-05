@@ -139,6 +139,7 @@ def show_diller_properties!
 end
 
 # ###########################  4 -  cards  ####################################
+
 def show_all_cards
   @cards.show_all_cards
 end
@@ -157,14 +158,11 @@ def start_game!
   user_getting_cards
   diller_getting_cards
 
-  # calculate card score
+  # calculate cards score
   @cards.score_calculate(@user.cards)
-  # ...
 end
 
 def user_getting_cards
-  p getting_cards.class
-  p getting_cards
   @user.cards = getting_cards
 end
 
