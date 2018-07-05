@@ -156,6 +156,9 @@ end
 def start_game!
   user_getting_cards
   diller_getting_cards
+
+  # calculate card score
+  @cards.score_calculate(@user.cards)
   # ...
 end
 
