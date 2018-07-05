@@ -8,15 +8,16 @@ class AppController
     @user = nil
     @diller = nil
     @cards = Cards.new
+    @game_bank = GameBank.new
   end
 
   def show_actions
     messages = ['Select the action by entering a number from the list: ',
                 '  1 - Create user & diller.',
                 '  2 - Show user properties.',
-                '  3 - Show diller properties',
-                '  4 - Show all cards',
-                '  7 - Start game',
+                '  3 - Show diller properties.',
+                '  4 - Show whole cards.',
+                '  7 - Start new game.',
                 BORDERLINE.to_s,
                 'To exit the menu, type: exit',
                 BORDERLINE.to_s]
@@ -33,6 +34,8 @@ class AppController
       show_diller_properties
     when '4'
       show_all_cards
+    when '5'
+      show_game
     when '7'
       start_game
     else
@@ -111,9 +114,11 @@ end
 def show_user_properties!
   puts "User name: #{@user.name}"
   puts "User bank amount: $ #{@user.bank}"
+  puts "Game bank ammount: $ #{@game_bank.ammount}"
   puts 'User cards:'
   puts LINE
   @cards.puts_cards_symbols(@user.cards)
+  puts "Actual user score: #{@cards.score_weight}"
 end
 
 # ##################  3 - show diller properties  #############################
@@ -133,15 +138,23 @@ end
 def show_diller_properties!
   puts "Diller name: #{@diller.name}"
   puts "Diller bank amount: $ #{@diller.bank}"
+  puts "Game bank ammount: $ #{@game_bank.ammount}"
   puts 'Diller cards:'
   puts LINE
   @cards.puts_cards_symbols(@diller.cards)
+  puts "Actual diller score: #{@cards.score_weight}"
 end
 
 # ###########################  4 -  cards  ####################################
 
 def show_all_cards
   @cards.show_all_cards
+end
+
+# ##########################   5 - show game ##################################
+
+def show_game
+  # ...
 end
 
 # ##########################   7 - run game ###################################
@@ -158,8 +171,32 @@ def start_game!
   user_getting_cards
   diller_getting_cards
 
-  # calculate cards score
+  puts "User:"
   @cards.score_calculate(@user.cards)
+  puts "User bank = #{@user.bank}"
+
+  puts LINE
+
+  puts "Diller:"
+  @cards.score_calculate(@diller.cards)
+  puts "Diller bank = #{@diller.bank}"
+
+  if @game_bank.check_ammount?(@user.bank)
+    @user.bank = @user.bank - @game_bank.pay
+  else
+    puts "no money"
+    return
+  end
+
+
+  if @game_bank.check_ammount?(@diller.bank)
+    @diller.bank = @diller.bank - @game_bank.pay
+  else
+    puts "no money"
+    return
+  end
+
+  @game_bank.ammount += @game_bank.pay * 2
 end
 
 def user_getting_cards

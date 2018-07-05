@@ -49,13 +49,9 @@ class Cards
   end
 
   def score_calculate(cards)
-    puts 'User cards:'
     new_half_line
     puts_cards_symbols(cards)
     cards.each do |card|
-      puts LINE
-      puts "card = #{card}"
-
       string = card[4..4]
 
       if string.match? /^[a-z]+$/i
@@ -72,8 +68,8 @@ class Cards
           end
         end
       end
-      puts "actual score_weight = #{@score_weight}"
     end
+    puts "Actual user score: #{@score_weight}"
   end
 
   def new_line

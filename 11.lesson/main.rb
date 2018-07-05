@@ -7,6 +7,7 @@ BORDERWAVE = '~' * 38
 
 require_relative 'accessors'
 require_relative 'validation'
+require_relative 'game_bank'
 require_relative 'cards'
 require_relative 'user'
 require_relative 'diller'
