@@ -114,11 +114,11 @@ end
 def show_user_properties!
   puts "User name: #{@user.name}"
   puts "User bank amount: $ #{@user.bank}"
-  puts "Game bank ammount: $ #{@game_bank.ammount}"
+  puts "Game bank amount: $ #{@game_bank.amount}"
   puts 'User cards:'
   puts LINE
   @cards.puts_cards_symbols(@user.cards)
-  puts "Actual user score: #{@cards.score_weight}"
+  puts "Score: #{@cards.score_weight}"
 end
 
 # ##################  3 - show diller properties  #############################
@@ -138,7 +138,7 @@ end
 def show_diller_properties!
   puts "Diller name: #{@diller.name}"
   puts "Diller bank amount: $ #{@diller.bank}"
-  puts "Game bank ammount: $ #{@game_bank.ammount}"
+  puts "Game bank amount: $ #{@game_bank.amount}"
   puts 'Diller cards:'
   puts LINE
   @cards.puts_cards_symbols(@diller.cards)
@@ -171,17 +171,7 @@ def start_game!
   user_getting_cards
   diller_getting_cards
 
-  puts "User:"
-  @cards.score_calculate(@user.cards)
-  puts "User bank = #{@user.bank}"
-
-  puts LINE
-
-  puts "Diller:"
-  @cards.score_calculate(@diller.cards)
-  puts "Diller bank = #{@diller.bank}"
-
-  if @game_bank.check_ammount?(@user.bank)
+  if @game_bank.check_amount?(@user.bank)
     @user.bank = @user.bank - @game_bank.pay
   else
     puts "no money"
@@ -189,14 +179,65 @@ def start_game!
   end
 
 
-  if @game_bank.check_ammount?(@diller.bank)
+  if @game_bank.check_amount?(@diller.bank)
     @diller.bank = @diller.bank - @game_bank.pay
   else
     puts "no money"
     return
   end
 
-  @game_bank.ammount += @game_bank.pay * 2
+  @game_bank.amount += @game_bank.pay * 2
+
+  puts "You have this cards:"
+  @cards.score_calculate(@user.cards)
+  puts "User bank = #{@user.bank}"
+  puts "Dealer shows the         "
+
+  puts LINE
+  puts BORDERWAVE
+
+  puts "Diller:"
+  @cards.score_calculate(@diller.cards)
+  puts "Diller bank = #{@diller.bank}"
+  puts LINE
+  puts BORDERWAVE
+  puts "Game bank = #{@game_bank.amount}"
+  puts BORDERWAVE
+  puts LINE
+
+  loop do
+    puts "Would you like to (s)kip, (a)dd a card or (o)pen the cards?"
+    answer = gets.downcase.strip
+    case answer
+    when 's'
+      user_skip
+      break
+    when 'a'
+      user_add_card
+      break # if scoreHand(@playerHand) > 21
+    when 'o'
+      user_open_cards
+      break
+    end
+  end
+
+  puts "Would you like to play again? (y/n)"
+
+  replay = gets.downcase.strip
+
+  main if replay == 'y'
+end
+
+def user_add_card
+  arr = @cards.getting_whole_deck
+  card = arr[rand(arr.size)]
+  @user.cards << card
+
+  puts 'You drew the '
+  puts @cards.puts_card_symbol(card)
+  puts 'Your score is now '
+  @cards.score_calculate(@user.cards)
+  puts 'Bust! You lose.' if @cards.score_calculate(@user.cards) > 21
 end
 
 def user_getting_cards

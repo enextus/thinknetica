@@ -2,18 +2,18 @@
 
 # class User
 class GameBank
-  attr_accessor :ammount
+  attr_accessor :amount
 
   def initialize
-    @ammount = 0
+    @amount = 0
     @pay = 10
   end
 
   def pay
-    @ammount + @pay
+    @amount + @pay
   end
 
-  def check_ammount?(value)
+  def check_amount?(value)
     return true unless value.zero? || (value - @pay).negative?
   end
 end
