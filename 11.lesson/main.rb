@@ -2,8 +2,8 @@
 
 LINE = ''
 CLEAR = `clear`.freeze
-BORDERLINE = '_' * 70
-BORDERWAVE = '~' * 38
+BORDERLINE = '_' * 50
+BORDERWAVE = '~' * 25
 
 require_relative 'accessors'
 require_relative 'validation'

@@ -49,8 +49,7 @@ class Cards
   end
 
   def score_calculate(cards)
-    new_half_line
-    puts_cards_symbols(cards)
+    @score_weight = 0
     cards.each do |card|
       string = card[4..4]
 
@@ -69,7 +68,7 @@ class Cards
         end
       end
     end
-    puts "Actual user score: #{@score_weight}"
+    @score_weight
   end
 
   def new_line

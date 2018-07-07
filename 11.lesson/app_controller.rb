@@ -114,11 +114,12 @@ end
 def show_user_properties!
   puts "User name: #{@user.name}"
   puts "User bank amount: $ #{@user.bank}"
-  puts "Game bank amount: $ #{@game_bank.amount}"
+
+  return if @user.cards.empty?
   puts 'User cards:'
   puts LINE
   @cards.puts_cards_symbols(@user.cards)
-  puts "Score: #{@cards.score_weight}"
+  puts "User score is now: #{@cards.score_calculate(@user.cards)}"
 end
 
 # ##################  3 - show diller properties  #############################
@@ -135,14 +136,21 @@ def diller_void
   puts 'No diller exist. Please create one first!'
 end
 
-def show_diller_properties!
+def show_diller_properties!(show = 1)
   puts "Diller name: #{@diller.name}"
   puts "Diller bank amount: $ #{@diller.bank}"
-  puts "Game bank amount: $ #{@game_bank.amount}"
+
+  return if @diller.cards.empty?
   puts 'Diller cards:'
   puts LINE
-  @cards.puts_cards_symbols(@diller.cards)
-  puts "Actual diller score: #{@cards.score_weight}"
+  case show
+  when 1
+    @cards.puts_cards_symbols(@diller.cards)
+    puts "Diller score is now: #{@cards.score_calculate(@diller.cards)}"
+  else
+    puts '* *'
+    puts 'Actual diller score: **'
+  end
 end
 
 # ###########################  4 -  cards  ####################################
@@ -168,45 +176,25 @@ def start_game
 end
 
 def start_game!
+  puts CLEAR
   user_getting_cards
   diller_getting_cards
 
-  if @game_bank.check_amount?(@user.bank)
-    @user.bank = @user.bank - @game_bank.pay
-  else
-    puts "no money"
-    return
-  end
+  make_a_user_bet
+  make_a_diller_bet
+  make_a_game_bank_pay
 
-
-  if @game_bank.check_amount?(@diller.bank)
-    @diller.bank = @diller.bank - @game_bank.pay
-  else
-    puts "no money"
-    return
-  end
-
-  @game_bank.amount += @game_bank.pay * 2
-
-  puts "You have this cards:"
-  @cards.score_calculate(@user.cards)
-  puts "User bank = #{@user.bank}"
-  puts "Dealer shows the         "
-
-  puts LINE
+  show_a_game_bank_amount
   puts BORDERWAVE
-
-  puts "Diller:"
-  @cards.score_calculate(@diller.cards)
-  puts "Diller bank = #{@diller.bank}"
-  puts LINE
+  show_user_properties!
   puts BORDERWAVE
-  puts "Game bank = #{@game_bank.amount}"
+  show_diller_properties!(0)
   puts BORDERWAVE
-  puts LINE
 
   loop do
-    puts "Would you like to (s)kip, (a)dd a card or (o)pen the cards?"
+    print 'Would you like to (s)kip, '
+    print '(a)dd a card'  if @user.cards.size < 3
+    puts ' or (o)pen the cards?'
     answer = gets.downcase.strip
     case answer
     when 's'
@@ -214,29 +202,48 @@ def start_game!
       break
     when 'a'
       user_add_card
-      break # if scoreHand(@playerHand) > 21
+      show_a_game_bank_amount
+      puts BORDERWAVE
+      show_user_properties!
+      puts BORDERWAVE
+      show_diller_properties!(0)
+      puts BORDERWAVE
+      check_more_as_21
+      puts "ADD HERE"
+      break
     when 'o'
       user_open_cards
       break
     end
   end
 
-  puts "Would you like to play again? (y/n)"
-
+  message_play_again
   replay = gets.downcase.strip
+  start_game! if replay == 'y'
+end
 
-  main if replay == 'y'
+def message_play_again
+  puts 'Would you like to play again? (y/n)'
 end
 
 def user_add_card
   arr = @cards.getting_whole_deck
   card = arr[rand(arr.size)]
   @user.cards << card
-
   puts 'You drew the '
-  puts @cards.puts_card_symbol(card)
-  puts 'Your score is now '
-  @cards.score_calculate(@user.cards)
+  @cards.puts_card_symbol(card)
+  puts LINE
+
+
+  # puts 'Your score is now '
+  # puts @cards.score_calculate(@user.cards)
+  # puts LINE
+  # @cards.new_half_line
+  # @cards.puts_cards_symbols(@user.cards)
+
+end
+
+def check_more_as_21
   puts 'Bust! You lose.' if @cards.score_calculate(@user.cards) > 21
 end
 
@@ -250,4 +257,28 @@ end
 
 def getting_cards
   @cards.random_cards
+end
+
+def make_a_user_bet
+  if @game_bank.check_amount?(@user.bank)
+    @user.bank = @user.bank - @game_bank.pay
+  else
+    puts 'no money'
+  end
+end
+
+def make_a_diller_bet
+  if @game_bank.check_amount?(@diller.bank)
+    @diller.bank = @diller.bank - @game_bank.pay
+  else
+    puts 'no money'
+  end
+end
+
+def make_a_game_bank_pay
+  @game_bank.amount += @game_bank.pay * 2
+end
+
+def show_a_game_bank_amount
+  puts "Game bank amount: $ #{@game_bank.amount}"
 end
