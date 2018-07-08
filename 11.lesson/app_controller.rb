@@ -7,8 +7,8 @@ class AppController
   def initialize
     @user = nil
     @diller = nil
+    @game_bank = nil
     @cards = Cards.new
-    @game_bank = GameBank.new
   end
 
   def show_actions
@@ -17,7 +17,7 @@ class AppController
                 '  2 - Show user properties.',
                 '  3 - Show diller properties.',
                 '  4 - Show whole cards.',
-                '  7 - Start new game.',
+                '  5 - Start new game.',
                 BORDERLINE.to_s,
                 'To exit the menu, type: exit',
                 BORDERLINE.to_s]
@@ -35,8 +35,6 @@ class AppController
     when '4'
       show_all_cards
     when '5'
-      show_game
-    when '7'
       start_game
     else
       puts 'Re-enter!'
@@ -52,11 +50,11 @@ class AppController
     if @user.nil?
       create_users!
     else
-      user_exists
+      message_user_exists
     end
   end
 
-  def user_exists
+  def message_user_exists
     puts "User '#{@user.name}' already exist. Only one user allowed!"
   end
 
@@ -159,36 +157,36 @@ def show_all_cards
   @cards.show_all_cards
 end
 
-# ##########################   5 - show game ##################################
-
-def show_game
-  # ...
-end
-
-# ##########################   7 - run game ###################################
+# ##########################   5 - run game ###################################
 
 def start_game
   if @user.nil?
     user_void
   else
+    first_init
     start_game!
   end
 end
 
-def start_game!
-  puts CLEAR
+def first_init(init=0)
+  @game_bank = GameBank.new
+
   user_getting_cards
   diller_getting_cards
 
   make_a_user_bet
   make_a_diller_bet
   make_a_game_bank_pay
+end
+
+def start_game!
+  puts CLEAR
 
   show_a_game_bank_amount
   puts BORDERWAVE
   show_user_properties!
   puts BORDERWAVE
-  show_diller_properties!(0)
+  show_diller_properties!(1)
   puts BORDERWAVE
 
   loop do
@@ -206,10 +204,12 @@ def start_game!
       puts BORDERWAVE
       show_user_properties!
       puts BORDERWAVE
-      show_diller_properties!(0)
+      show_diller_properties!(1)
       puts BORDERWAVE
-      check_more_as_21
-      puts "ADD HERE"
+      return unless check_user_lost?
+      message_game_over
+      return unless check_user_win?
+      message_game_win
       break
     when 'o'
       user_open_cards
@@ -217,13 +217,33 @@ def start_game!
     end
   end
 
+
+  # diller_go!
+  return unless check_user_lost? || check_user_win?
+  puts "44 HERE"
+  if @cards.score_calculate(@diller.cards) > 17
+    start_game!
+  else
+    puts "Добавить карту (если очков менее 17). У дилера появляется новая карта"
+    puts "(для пользователя закрыта). После этого ход переходит игроку."
+    puts "Может быть добавлена только одна карта."
+  end
+
   message_play_again
+
   replay = gets.downcase.strip
   start_game! if replay == 'y'
 end
 
 def message_play_again
   puts 'Would you like to play again? (y/n)'
+end
+
+def message_game_win
+  puts 'YES! You win!'
+end
+def message_game_over
+  puts 'Bust! You lose. Game over!'
 end
 
 def user_add_card
@@ -233,18 +253,14 @@ def user_add_card
   puts 'You drew the '
   @cards.puts_card_symbol(card)
   puts LINE
-
-
-  # puts 'Your score is now '
-  # puts @cards.score_calculate(@user.cards)
-  # puts LINE
-  # @cards.new_half_line
-  # @cards.puts_cards_symbols(@user.cards)
-
 end
 
-def check_more_as_21
-  puts 'Bust! You lose.' if @cards.score_calculate(@user.cards) > 21
+def check_user_win?
+  @cards.score_calculate(@user.cards) == 21
+end
+
+def check_user_lost?
+  @cards.score_calculate(@user.cards) > 21
 end
 
 def user_getting_cards
