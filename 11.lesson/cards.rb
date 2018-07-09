@@ -48,58 +48,24 @@ class Cards
     print [card.hex].pack('U*') + ', '
   end
 
+  def mapping(value)
+    case value
+    when /[23456789]/
+      value.to_i
+    when /[ABDE]/
+      10
+    when '1'
+      @c_new.sum + 11 <= 21 ? 11 : 1
+    end
+  end
+
   def score_calculate(cards)
-    @score_weight = 0
-    @sorted_cards = []
-
-    cards.each do |element|
-      picture_card ||= nil
-      nummeric_card ||= nil
-
-      if %w[A B D E].include?(element[4..4])
-        picture_card = element
-      else
-        nummeric_card = element
-      end
-
-      if nummeric_card.nil?
-        if @sorted_cards[0].nil?
-          @sorted_cards[0] = picture_card
-        else
-          @sorted_cards[1] = picture_card
-        end
-      elsif picture_card.nil?
-        if @sorted_cards[0].nil?
-          @sorted_cards[0] = nummeric_card
-        else
-          @sorted_cards[1] = nummeric_card
-        end
-      else
-        @sorted_cards = [picture_card, nummeric_card]
-      end
+    @c_new = []
+    puts "cards = #{cards}"
+    cards.each_with_index do |value, index|
+      @c_new[index] = mapping(value[4..4])
     end
-
-    @sorted_cards = @sorted_cards.reverse if @sorted_cards[0][4..4] == '1'
-
-    @sorted_cards.each do |card|
-      string = card[4..4]
-
-      if string.match? /^[a-z]+$/i
-        @score_weight += 10
-      else
-        case string.to_i
-        when 2..10
-          @score_weight += string.to_i
-        when 1
-          if ((21 - (@score_weight + 1)) < (21 - (@score_weight + 11)) && (@score_weight + 11 <  21)) || @score_weight.zero?
-            @score_weight += 1
-          else
-            @score_weight += 11
-          end
-        end
-      end
-    end
-    @score_weight
+    @c_new.sum
   end
 
   def new_line
