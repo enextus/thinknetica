@@ -61,7 +61,6 @@ class Cards
 
   def score_calculate(cards)
     @c_new = []
-    puts "cards = #{cards}"
     cards.each_with_index do |value, index|
       @c_new[index] = mapping(value[4..4])
     end

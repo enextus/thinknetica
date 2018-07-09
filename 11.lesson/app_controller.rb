@@ -17,7 +17,7 @@ class AppController
                 '  2 - Show user properties.',
                 '  3 - Show diller properties.',
                 '  4 - Show whole cards.',
-                '  5 - Start new game.',
+                '  5 - Start game.',
                 BORDERLINE.to_s,
                 'To exit the menu, type: exit',
                 BORDERLINE.to_s]
@@ -62,10 +62,11 @@ class AppController
     @message = 'Enter the user name with format (latin [a-z\d]+): '
   end
 
-  # creating user
+  # creating user && diller
   def create_users!
     message_create_user
     user = nil
+    diller = nil
 
     loop do
       print @message
@@ -134,7 +135,7 @@ def diller_void
   puts 'No diller exist. Please create one first!'
 end
 
-def show_diller_properties!(show = 1)
+def show_diller_properties!(show = 0)
   puts "Diller name: #{@diller.name}"
   puts "Diller bank amount: $ #{@diller.bank}"
 
@@ -168,7 +169,7 @@ def start_game
   end
 end
 
-def first_init(init=0)
+def first_init
   @game_bank = GameBank.new
 
   user_getting_cards
@@ -181,56 +182,87 @@ end
 
 def start_game!
   puts CLEAR
-
-  show_a_game_bank_amount
-  puts BORDERWAVE
-  show_user_properties!
-  puts BORDERWAVE
-  show_diller_properties!(1)
-  puts BORDERWAVE
-
+puts "1. HERE"
   loop do
+    show_a_game_bank_amount
+    puts BORDERWAVE
+    show_user_properties!
+    puts BORDERWAVE
+    show_diller_properties!(1)
+    puts BORDERWAVE
+
+    # return check_user_lost? || check_user_win?
+
     print 'Would you like to (s)kip, '
     print '(a)dd a card'  if @user.cards.size < 3
     puts ' or (o)pen the cards?'
+
     answer = gets.downcase.strip
+
     case answer
     when 's'
-      user_skip
+      diller_step
       break
     when 'a'
       user_add_card
-      show_a_game_bank_amount
-      puts BORDERWAVE
-      show_user_properties!
-      puts BORDERWAVE
-      show_diller_properties!(1)
-      puts BORDERWAVE
-      return unless check_user_lost?
-      message_game_over
-      return unless check_user_win?
-      message_game_win
+      start_game!
       break
     when 'o'
-      user_open_cards
+      open_cards
       break
     end
   end
+end
 
-
-  # diller_go!
-  return unless check_user_lost? || check_user_win?
-  puts "44 HERE"
-  if @cards.score_calculate(@diller.cards) > 17
+def diller_step
+  if @cards.score_calculate(@diller.cards) >= 17
     start_game!
-  else
-    puts "Добавить карту (если очков менее 17). У дилера появляется новая карта"
-    puts "(для пользователя закрыта). После этого ход переходит игроку."
-    puts "Может быть добавлена только одна карта."
+  elsif @cards.score_calculate(@diller.cards) < 17
+    diller_add_card
+    start_game!
+  end
+end
+
+def open_cards
+  diller_koeffizient = 21 - @cards.score_calculate(@diller.cards)
+  user_koeffizient = 21 - @cards.score_calculate(@user.cards)
+
+  if diller_koeffizient == user_koeffizient
+    getting_prize
+    puts "nobody has won!"
+  elsif diller_koeffizient < user_koeffizient
+    getting_prize(@diller)
+    puts "#{@diller.name} has won!"
+  elsif diller_koeffizient > user_koeffizient
+    getting_prize(@user)
+    puts "#{@user.name} has won!"
   end
 
-  message_play_again
+  show_user_properties!
+  show_diller_properties!(1)
+end
 
+def message_user_win
+  puts 'User win!'
+end
+
+def message_diller_win
+  puts 'Diller win!'
+end
+
+def getting_prize(player = nil)
+  if player.nil?
+    @win_prize = @game_bank.amount / 2
+    @user.bank, @diller.bank = @win_prize, @win_prize
+
+  else
+    player.bank += @game_bank.amount
+    @game_bank.amount = 0
+  end
+end
+
+def ask_play_again
+  message_play_again
   replay = gets.downcase.strip
   start_game! if replay == 'y'
 end
@@ -239,19 +271,27 @@ def message_play_again
   puts 'Would you like to play again? (y/n)'
 end
 
-def message_game_win
-  puts 'YES! You win!'
-end
-def message_game_over
-  puts 'Bust! You lose. Game over!'
-end
-
 def user_add_card
   arr = @cards.getting_whole_deck
   card = arr[rand(arr.size)]
   @user.cards << card
-  puts 'You drew the '
+  puts BORDERWAVE
+  puts 'You drew the card: '
+  puts LINE
   @cards.puts_card_symbol(card)
+  puts LINE
+  puts LINE
+end
+
+def diller_add_card
+  arr = @cards.getting_whole_deck
+  card = arr[rand(arr.size)]
+  @diller.cards << card
+  puts BORDERWAVE
+  puts 'You drew the card: '
+  puts LINE
+  @cards.puts_card_symbol(card)
+  puts LINE
   puts LINE
 end
 
@@ -261,6 +301,14 @@ end
 
 def check_user_lost?
   @cards.score_calculate(@user.cards) > 21
+end
+
+def message_game_win
+  puts 'YES! You win!'
+end
+
+def message_game_over
+  puts 'Bust! You lose. Game over!'
 end
 
 def user_getting_cards
