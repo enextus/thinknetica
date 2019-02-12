@@ -43,7 +43,7 @@ module Validation
 
     def validate_range(name, value, _params)
       value = value.to_i
-      raise "'#{name}' is not a ditig! Re-enter a digital value!" if value.zero?
+      raise "'#{name}' is not a digit! Re-enter a digital value!" if value.zero?
       raise "Out of '#{name}', please try again!" if value.negative?
     end
 

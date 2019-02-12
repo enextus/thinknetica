@@ -14,7 +14,7 @@ c = gets.to_f
 # вычисляем дискриминант
 d = b**2 - 4 * a * c
 
-if d > 0
+if d.positive?
   sqrt_of_d = Math.sqrt(d)
   x1 = -b + sqrt_of_d / 2 * a
   x2 = -b - sqrt_of_d / 2 * a

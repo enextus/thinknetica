@@ -9,7 +9,7 @@ tall = gets.to_i
 
 weight = tall - 110
 
-if weight < 0
+if weight.negative?
   puts 'Ваш вес уже оптимальный.'
 else
   puts "#{name}, Ваш оптимальный вес составляет: #{weight} кг."
