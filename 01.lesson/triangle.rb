@@ -1,5 +1,6 @@
-# Программа определения типа треугольника по его двум катетам и гипотенузе.
-# https://en.wikipedia.org/wiki/Pythagorean_triple
+# frozen_string_literal: true
+
+# The program of determining the type of triangle on its two legs and hypotenuse
 
 puts 'Программа определения типа треугольника по его 3-м сторонам.'
 print 'Пожалуйста введите длину стороны катета (a) треугольника: '

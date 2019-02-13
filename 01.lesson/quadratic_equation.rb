@@ -1,5 +1,8 @@
-# Программа вычисляет дискриминант (D) и корни уравнения
-# (x1 и x2, если они есть) и выводит значения дискриминанта и корней на экран.
+# frozen_string_literal: true
+
+# The program calculates the discriminant (D) and the roots of the equation.
+# (x1 and x2, if any) and displays the values of the discriminant
+# and the roots on the screen.
 
 puts 'Программа вычисляет дискриминант (D) и корни уравнения.'
 print 'Пожалуйста введите коэффициент (a): '
@@ -10,8 +13,6 @@ b = gets.to_f
 
 print 'Пожалуйста введите коэффициент (c): '
 c = gets.to_f
-
-# вычисляем дискриминант
 d = b**2 - 4 * a * c
 
 if d.positive?

@@ -1,4 +1,6 @@
-# Программа определения идеального веса человека по его росту.
+# frozen_string_literal: true
+
+# The program to determine the ideal weight of a person according to his height.
 
 puts 'Программа определения идеального веса человека по его росту.'
 print 'Пожалуйста введите Ваше имя: '
