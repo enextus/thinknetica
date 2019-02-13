@@ -2,13 +2,13 @@
 
 # The program for determining the area of the triangle on its sides.
 
-puts 'Программа определения площади треугольника по его сторонам.'
-puts 'Пожалуйста введите длину основания (a) треугольника в сантиметрах: '
+puts 'The program for determining the area of the triangle on its sides.'
+puts 'Please enter the length of the base (a) of the triangle in centimeters: '
 length = gets.to_f
 
-print 'Пожалуйста введите высоту (h) треугольника в сантиметрах: '
+print 'Please enter the height (h) of the triangle in centimeters: '
 height = gets.to_f
 
 area = 0.5 * length * height
 
-puts "Площадь треугольника составляет: #{area} см/2."
+puts "The area of ​​the triangle is: #{area} cm²."

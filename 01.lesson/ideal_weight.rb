@@ -2,17 +2,17 @@
 
 # The program to determine the ideal weight of a person according to his height.
 
-puts 'Программа определения идеального веса человека по его росту.'
-print 'Пожалуйста введите Ваше имя: '
+puts 'The program to determine the ideal weight of a person according to his height.'
+print 'Please enter your name: '
 name = gets.chomp.capitalize
 
-print 'Пожалуйста введите Ваш рост в сантиметрах: '
+print 'Please enter your height in centimeters: '
 tall = gets.to_i
 
 weight = tall - 110
 
 if weight.negative?
-  puts 'Ваш вес уже оптимальный.'
+  puts 'Your weight is already optimal.'
 else
-  puts "#{name}, Ваш оптимальный вес составляет: #{weight} кг."
+  puts "#{name}, Your optimal weight is: #{weight} kg."
 end

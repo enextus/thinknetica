@@ -2,33 +2,33 @@
 
 # The program of determining the type of triangle on its two legs and hypotenuse
 
-puts 'Программа определения типа треугольника по его 3-м сторонам.'
-print 'Пожалуйста введите длину стороны катета (a) треугольника: '
+puts 'The program of determining the type of triangle on its two legs and hypotenuse.'
+print 'Please enter the length of the side of the leg (a) of the triangle: '
 a = gets.to_f
 
-print 'Пожалуйста введите длину стороны катета (b) треугольника: '
+print 'Please enter the length of the side of the leg (b) of the triangle: '
 b = gets.to_f
 
-print 'Пожалуйста введите длину стороны гипотенузы (c) треугольника: '
+print 'Please enter the length of the side of the hypotenuse (c) of the triangle: '
 c = gets.to_f
 
 def rectangular(a, b, c)
   arr = [a, b, c].sort
 
-  return 'Невозможная длина сторон' if arr.include?(0) || arr.min.negative?
+  return 'Impossible side length' if arr.include?(0) || arr.min.negative?
 
   case (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
   when true
-    puts 'Ваш треугольник является прямоугольным.'
+    puts 'Your triangle is rectangular.'
   else
-    puts 'Ваш треугольник не является прямоугольным.'
+    puts 'Your triangle is not rectangular.'
   end
 
   case arr.uniq.size
   when 1
-    puts 'Ваш треугольник является равносторонним.'
+    puts 'Your triangle is equilateral.'
   when 2
-    puts 'Ваш треугольник является равнобедренным треугольником.'
+    puts 'Your triangle is an isosceles triangle.'
   end
 end
 

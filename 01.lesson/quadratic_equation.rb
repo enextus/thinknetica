@@ -4,14 +4,14 @@
 # (x1 and x2, if any) and displays the values of the discriminant
 # and the roots on the screen.
 
-puts 'Программа вычисляет дискриминант (D) и корни уравнения.'
-print 'Пожалуйста введите коэффициент (a): '
+puts 'The program calculates the discriminant (D) and the roots of the equation.'
+print 'Please enter a factor (a): '
 a = gets.to_f
 
-print 'Пожалуйста введите коэффициент (b): '
+print 'Please enter a factor (b): '
 b = gets.to_f
 
-print 'Пожалуйста введите коэффициент (c): '
+print 'Please enter a factor (c): '
 c = gets.to_f
 d = b**2 - 4 * a * c
 
@@ -19,13 +19,13 @@ if d.positive?
   sqrt_of_d = Math.sqrt(d)
   x1 = -b + sqrt_of_d / 2 * a
   x2 = -b - sqrt_of_d / 2 * a
-  puts "Дискриминанат = #{d},"
-  puts "1-й корень = #{x1},"
-  puts "2-й корень = #{x2}."
+  puts "discriminant = #{d},"
+  puts "1st root = #{x1},"
+  puts "2st root = #{x2}."
 elsif d.zero?
-  puts "Дискриминанат = #{d},"
+  puts "discriminant = #{d},"
   x = -b / 2 * a
-  puts "Oба корня имееют одно значение = #{x}."
+  puts "Both root have one value = #{x}."
 else
-  puts 'Корней нет'
+  puts 'No roots'
 end
