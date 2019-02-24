@@ -12,19 +12,26 @@ b = gets.to_f
 print 'Enter the length of the side of the hypotenuse (c) of the triangle: '
 c = gets.to_f
 
-def rectangular(a, b, c)
-  arr = [a, b, c].sort
+def checkvars(first_leg, second_leg, hypotenuse)
+  arr = [first_leg, second_leg, hypotenuse].sort
 
-  return 'Impossible side length' if arr.include?(0) || arr.min.negative?
+  return if arr.include?(0) || arr.min.negative?
 
-  case (arr[2]**2).equal?(arr[0]**2 + arr[1]**2)
+  arr
+end
+
+def rectangular(first_leg, second_leg, hypotenuse)
+  array = checkvars(first_leg, second_leg, hypotenuse)
+
+  return 'Impossible side length' if array.class != Array
+
+  case (array[2]**2).equal?(array[0]**2 + array[1]**2)
   when true
     puts 'Your triangle is rectangular.'
   else
     puts 'Your triangle is not rectangular.'
   end
-
-  case arr.uniq.size
+  case array.uniq.size
   when 1
     puts 'Your triangle is equilateral.'
   when 2
