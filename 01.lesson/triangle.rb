@@ -2,14 +2,14 @@
 
 # The program of determining the type of triangle on its two legs and hypotenuse
 
-puts 'The program of determining the type of triangle on its two legs and hypotenuse.'
+puts 'Program of determining the type of triangle on its two legs & hypotenuse.'
 print 'Please enter the length of the side of the leg (a) of the triangle: '
 a = gets.to_f
 
 print 'Please enter the length of the side of the leg (b) of the triangle: '
 b = gets.to_f
 
-print 'Please enter the length of the side of the hypotenuse (c) of the triangle: '
+print 'Enter the length of the side of the hypotenuse (c) of the triangle: '
 c = gets.to_f
 
 def rectangular(a, b, c)
