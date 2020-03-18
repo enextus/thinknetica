@@ -13,14 +13,15 @@ class Wagon
 
   def valid?
     validate!
-  rescue
-    false
+    rescue
+      false
   end
 
   protected
 
   def validate!
-    raise 'Номер не может быть пустым' unless %w[cargo pass].include?(@type)
+    arr = %w[cargo pass]
+    raise 'Номер не может быть пустым' unless arr.include?(@type)
 
     true
   end
