@@ -21,7 +21,7 @@ class Wagon
 
   def validate!
     arr = %w[cargo pass]
-    raise 'Номер не может быть пустым' unless arr.include?(@type)
+    raise 'Неверный тип поезда!' unless arr.include?(@type)
 
     true
   end

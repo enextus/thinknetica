@@ -4,6 +4,6 @@
 # class CargoWagon
 class CargoWagon < Wagon
   def initialize
-    super('cargo')
+    super 'cargo'
   end
 end
