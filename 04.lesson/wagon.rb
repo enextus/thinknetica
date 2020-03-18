@@ -20,7 +20,7 @@ class Wagon
   protected
 
   def validate!
-    raise 'Номер не может быть пустым' unless ["cargo", "pass"].include?(@type)
+    raise 'Номер не может быть пустым' unless %w[cargo pass].include?(@type)
 
     true
   end
