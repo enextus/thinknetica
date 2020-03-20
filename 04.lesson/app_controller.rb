@@ -88,6 +88,7 @@ class AppController
 
     loop do
       args = []
+
       request_info.each do |message|
         print message
         args << gets.chomp
@@ -101,8 +102,11 @@ class AppController
       else
         puts check[:errors]
       end
+
     end
+
     response
+
   end
 
   # ###############    0 - вспомогательные методы  ############################
