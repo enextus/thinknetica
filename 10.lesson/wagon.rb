@@ -6,7 +6,7 @@ class Wagon
   include CompanyName
   include Validation
 
-  # аьтоматически добавляются во все экземляра класса
+  # atomatisch werden hinzugef.
   attr_reader :capacity, :type, :free_capacity
   attr_accessor_with_history :color
   strong_attr_accessor :levels, Integer

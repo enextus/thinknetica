@@ -154,8 +154,8 @@ class AppController
       @stations[name.to_sym] = station
       break
     end
-  rescue StandardError => exception
-    error_message(exception)
+  rescue StandardError => e
+    error_message(e)
     retry
   else
     message_station_created(station.name)
@@ -188,8 +188,8 @@ class AppController
       created_train = @trains[number.to_sym] = train
       break
     end
-  rescue StandardError => exception
-    error_message(exception)
+  rescue StandardError => e
+    error_message(e)
     retry
   else
     message_train_created(created_train.number)
@@ -226,8 +226,8 @@ class AppController
 
       break
     end
-  rescue StandardError => exception
-    error_message(exception)
+  rescue StandardError => e
+    error_message(e)
     retry
   else
     message_wagon_created(type)
@@ -236,7 +236,6 @@ class AppController
   def message_wagon_created(type)
     puts "\nWagon of type: «#{type}» was created."
   end
-
 
   # ###############    501 show actual color of cargo wagons   ################
   def show_actual_color
@@ -291,7 +290,7 @@ class AppController
   # ###############    502 - set actual color of cargo wagon   ################
   # checking the possibility of colorizing of wagons
   def setting_new_color
-    @color = %w( red grey black white )
+    @color = %w[red grey black white]
     if @wagons['cargo'].empty?
       wagons_void
     else
@@ -321,7 +320,7 @@ class AppController
     puts "\nColor of wagons was setted!"
   end
 
-  # ###############    503 show complete colors history  ##########################
+  # ###############    503 show complete colors history  ######################
 
   def show_colors_history
     if @wagons['cargo'].empty?
@@ -334,13 +333,12 @@ class AppController
   def show_complete_colors_history
     @wagons.map do |type, wagons|
       [type, wagons.each do |wagon|
-
         puts "type #{type}"
         puts "wagons #{wagons}"
         if wagon.color_history.nil?
           puts 'The color history is not yet exist!'
         else
-          puts "The complete color history looks like this:: '#{wagon.color_history}'"
+          puts "The color history looks like this:: '#{wagon.color_history}'"
         end
       end]
     end
@@ -402,11 +400,13 @@ class AppController
 
   def passenger_matches(passenger_trains_amount)
     return unless passenger_trains_amount.positive?
+
     @wagons['passenger'].size.positive?
   end
 
   def cargo_matches(cargo_amount)
     return unless cargo_amount.positive?
+
     @wagons['cargo'].size.positive?
   end
 

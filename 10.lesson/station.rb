@@ -31,6 +31,7 @@ class Station
 
   def arrive(train)
     return if trains.include?(train)
+
     @trains << train
   end
 

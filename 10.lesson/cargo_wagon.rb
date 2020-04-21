@@ -11,6 +11,7 @@ class CargoWagon < Wagon
 
   def loading_volume_by_wagon(amount)
     return if amount > @free_capacity || @free_capacity.zero?
+
     @free_capacity -= amount
   end
 end

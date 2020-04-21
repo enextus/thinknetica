@@ -33,11 +33,13 @@ class Train
 
   def add_wagon(wagon)
     return unless speed.zero?
+
     @wagons << wagon
   end
 
   def delete_wagon
     return unless speed.zero? || wagons.zero?
+
     @wagons.pop
   end
 
@@ -49,6 +51,7 @@ class Train
 
   def previous_station
     return if @position.zero?
+
     @route.stations[@position - 1]
   end
 
@@ -58,11 +61,13 @@ class Train
 
   def next_station
     return if @position >= @route.stations.size - 1
+
     @route.stations[@position + 1]
   end
 
   def move_train_forward
     return if @route.stations.nil? || @position >= @route.stations.size - 1
+
     current_station.depart(self)
     @position += 1
     current_station.arrive(self)
@@ -70,6 +75,7 @@ class Train
 
   def move_train_backward
     return if @route.nil? || @position.zero?
+
     current_station.depart(self)
     @position -= 1
     current_station.arrive(self)
@@ -77,11 +83,13 @@ class Train
 
   def accelerate(value)
     return unless value.positive?
+
     @speed += value
   end
 
   def decelerate(value)
     return if value.negative? || @speed < value
+
     @speed -= value
   end
 

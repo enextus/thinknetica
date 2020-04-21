@@ -12,7 +12,6 @@ module Validation
     attr_reader :checks
 
     def validate(attr, kind, *params)
-
       @checks ||= {}
       @checks[attr] ||= []
       @checks[attr] << { kind: kind, params: params }

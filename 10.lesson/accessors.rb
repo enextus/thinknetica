@@ -28,6 +28,7 @@ module Accessors
 
     define_method("#{name}=".to_sym) do |value|
       raise TypeError, 'Wrong type argument!' if value.class != type
+
       instance_variable_set(var_name, value)
     end
   end
