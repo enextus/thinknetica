@@ -6,6 +6,7 @@ class Wagon
   include CompanyName
   include Validation
 
+  # аьтоматически добавляются во все экземляра класса
   attr_reader :capacity, :type, :free_capacity
   attr_accessor_with_history :color
   strong_attr_accessor :levels, Integer
@@ -15,6 +16,7 @@ class Wagon
     @type = type
     validate!
     @free_capacity = @capacity
+    register_instance
   end
 
   def loaded_capacity

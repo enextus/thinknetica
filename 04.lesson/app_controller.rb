@@ -96,13 +96,14 @@ class AppController
 
       check = send(validator, *args)
 
+      puts("check.class: #{check.class}, check.inspect: #{check.inspect}, check: #{check}")
+
       if check[:success]
         response = send(success_callback, *args)
         break
       else
         puts check[:errors]
       end
-
     end
 
     response

@@ -38,7 +38,7 @@ class AppController
                 ' 20 - See the list of wagons at the train',
                 ' 21 - Display the list of trains at the station (&block)',
                 ' 22 - Book a place in the passenger wagon',
-                ' 23 - Load the volume in the cargo wagon',
+                ' 23 - Load the volume in the cargo wagon NEW',
                 BORDERLINE.to_s,
                 'To exit the menu, type: exit',
                 BORDERLINE.to_s]
@@ -334,6 +334,9 @@ class AppController
   def show_complete_colors_history
     @wagons.map do |type, wagons|
       [type, wagons.each do |wagon|
+
+        puts "type #{type}"
+        puts "wagons #{wagons}"
         if wagon.color_history.nil?
           puts 'The color history is not yet exist!'
         else

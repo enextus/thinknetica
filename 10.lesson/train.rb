@@ -1,3 +1,4 @@
+require 'pry'
 # frozen_string_literal: true
 
 # class Train
@@ -13,7 +14,9 @@ class Train
   end
 
   attr_reader :number, :type, :speed, :wagons, :route
-
+  validate :name, :type, String
+  validate :name, :presence
+  validate :number, :format, /^[a-z\d]{3}-?[a-z\d]{2}$/i, 'XXX-XX or XXXXX'
   def initialize(number, type)
     @number = number
     @type = type

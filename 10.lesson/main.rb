@@ -23,5 +23,8 @@ loop do
   app_controller.show_actions
   choice = gets.chomp.downcase
   break if choice == 'exit'
+
   app_controller.action(choice)
+
+  binding.pry
 end

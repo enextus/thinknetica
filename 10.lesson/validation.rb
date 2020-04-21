@@ -12,6 +12,7 @@ module Validation
     attr_reader :checks
 
     def validate(attr, kind, *params)
+
       @checks ||= {}
       @checks[attr] ||= []
       @checks[attr] << { kind: kind, params: params }
@@ -54,6 +55,8 @@ module Validation
     end
 
     def validate!
+      # binding.pry
+      # checks ia an array with all params
       self.class.checks.each do |attr_name, attr_validations|
         value = instance_variable_get("@#{attr_name}".to_sym)
         attr_validations.each do |attributes|
